@@ -11,22 +11,28 @@ permissions:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Package Release Archives
+      - name: Build Windows Installer EXE and Release Archives
+        shell: pwsh
         run: |
-          mkdir -p release_pkg/openlp/core/api/remote_client/assets
-          mkdir -p release_pkg/scripts
-          cp openlp/core/api/remote_client/index.html release_pkg/openlp/core/api/remote_client/index.html
-          cp openlp/core/api/remote_client/assets/version.js release_pkg/openlp/core/api/remote_client/assets/version.js
-          cp scripts/remoteenhancementsplugin.py release_pkg/scripts/remoteenhancementsplugin.py
-          cp install_custom_ui.bat release_pkg/install_custom_ui.bat
-          cp LICENSE release_pkg/LICENSE
-          cd openlp/core/api/remote_client && zip -r ../../../../remote.zip . && cd ../../../..
-          cd release_pkg && zip -r ../OpenLP-Remote-and-PC-UI.zip . && cd ..
+          $ico = (Get-ChildItem -Recurse resources -Filter "OpenLP.ico" | Select-Object -First 1).FullName
+          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /nologo /target:winexe /out:"OpenLP-Remote-UI-Setup.exe" /win32icon:"$ico" /resource:"openlp\core\api\remote_client\index.html,index.html" /resource:"openlp\core\api\remote_client\assets\version.js,version.js" /resource:"scripts\remoteenhancementsplugin.py,remoteenhancementsplugin.py" "scripts\OpenLPUISetup.cs"
+
+          New-Item -ItemType Directory -Force -Path "release_pkg\openlp\core\api\remote_client\assets" | Out-Null
+          New-Item -ItemType Directory -Force -Path "release_pkg\scripts" | Out-Null
+          Copy-Item "OpenLP-Remote-UI-Setup.exe" "release_pkg\OpenLP-Remote-UI-Setup.exe"
+          Copy-Item "openlp\core\api\remote_client\index.html" "release_pkg\openlp\core\api\remote_client\index.html"
+          Copy-Item "openlp\core\api\remote_client\assets\version.js" "release_pkg\openlp\core\api\remote_client\assets\version.js"
+          Copy-Item "scripts\remoteenhancementsplugin.py" "release_pkg\scripts\remoteenhancementsplugin.py"
+          Copy-Item "install_custom_ui.bat" "release_pkg\install_custom_ui.bat"
+          Copy-Item "LICENSE" "release_pkg\LICENSE"
+
+          Compress-Archive -Path "openlp\core\api\remote_client\*" -DestinationPath "remote.zip" -Force
+          Compress-Archive -Path "release_pkg\*" -DestinationPath "OpenLP-Remote-and-PC-UI.zip" -Force
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -35,6 +41,9 @@ jobs:
           body: |
             ## Nouveautés de cette version (Licence GNU GPL v3)
             
+            ### Installation en 1 clic sur Windows (`.exe`)
+            Téléchargez et lancez **`OpenLP-Remote-UI-Setup.exe`** ci-dessous, puis cliquez sur **« Installer et Lancer OpenLP »**.
+
             ### 1. Télécommande Mobile (Web Remote) repensée
             - **Double moniteur permanent** : **Prévisualisation** (avant envoi) + **En direct** (projecteur) avec bouton *Go Live*.
             - **Import direct depuis la galerie du téléphone** : téléchargez une image ou affiche depuis votre smartphone pour la prévisualiser, l'ajouter au service ou la projeter sans passer par le PC.
@@ -46,10 +55,8 @@ jobs:
             - **Barre supérieure d'accès rapide** : accès en 1 clic à *Bible*, *Images & Affiches*, *Diapos perso* et *Chants*.
             - **Mode Simplifié (Jeunes)** : masque les panneaux complexes inutilisés tout en conservant le bouton d'envoi **Direct** dans chaque onglet.
             - **Bascule Thème Noir / Blanc** en direct sur PC.
-
-            ### Installation rapide sur Windows
-            Téléchargez `OpenLP-Remote-and-PC-UI.zip`, décompressez-le et double-cliquez sur `install_custom_ui.bat` (ou décompressez `remote.zip` dans `%APPDATA%\openlp\data\remotes`).
           files: |
+            OpenLP-Remote-UI-Setup.exe
             OpenLP-Remote-and-PC-UI.zip
             remote.zip
           draft: false
