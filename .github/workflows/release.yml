@@ -1,0 +1,56 @@
+name: Publish OpenLP UI Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Package Release Archives
+        run: |
+          mkdir -p release_pkg/openlp/core/api/remote_client/assets
+          mkdir -p release_pkg/scripts
+          cp openlp/core/api/remote_client/index.html release_pkg/openlp/core/api/remote_client/index.html
+          cp openlp/core/api/remote_client/assets/version.js release_pkg/openlp/core/api/remote_client/assets/version.js
+          cp scripts/remoteenhancementsplugin.py release_pkg/scripts/remoteenhancementsplugin.py
+          cp install_custom_ui.bat release_pkg/install_custom_ui.bat
+          cp LICENSE release_pkg/LICENSE
+          cd openlp/core/api/remote_client && zip -r ../../../../remote.zip . && cd ../../../..
+          cd release_pkg && zip -r ../OpenLP-Remote-and-PC-UI.zip . && cd ..
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "OpenLP Mobile Remote & PC Simplified UI (${{ github.ref_name }})"
+          body: |
+            ## Nouveautés de cette version (Licence GNU GPL v3)
+            
+            ### 1. Télécommande Mobile (Web Remote) repensée
+            - **Double moniteur permanent** : **Prévisualisation** (avant envoi) + **En direct** (projecteur) avec bouton *Go Live*.
+            - **Import direct depuis la galerie du téléphone** : téléchargez une image ou affiche depuis votre smartphone pour la prévisualiser, l'ajouter au service ou la projeter sans passer par le PC.
+            - **Volet latéral rabattable épuré** : *Services*, *Images*, *Bible* (sélecteur Livre/Chapitre/Verset + aperçu du texte), *Thèmes* (habillages visuels OpenLP avec miniatures) et *Diapos perso* (création et modification à distance).
+            - **Barre inférieure fidèle aux 5 commandes d'origine** : *Élém. préc.*, *Élém. suiv.*, *Diapo préc.*, *Diapo suiv.* et *Affichage* (*Noir*, *Thème*, *Bureau*, *Afficher*).
+            - **Thème Noir / Blanc** : bascule instantanée entre mode sombre et mode clair.
+
+            ### 2. Interface PC (« Mode Simplifié / Jeunes »)
+            - **Barre supérieure d'accès rapide** : accès en 1 clic à *Bible*, *Images & Affiches*, *Diapos perso* et *Chants*.
+            - **Mode Simplifié (Jeunes)** : masque les panneaux complexes inutilisés tout en conservant le bouton d'envoi **Direct** dans chaque onglet.
+            - **Bascule Thème Noir / Blanc** en direct sur PC.
+
+            ### Installation rapide sur Windows
+            Téléchargez `OpenLP-Remote-and-PC-UI.zip`, décompressez-le et double-cliquez sur `install_custom_ui.bat` (ou décompressez `remote.zip` dans `%APPDATA%\openlp\data\remotes`).
+          files: |
+            OpenLP-Remote-and-PC-UI.zip
+            remote.zip
+          draft: false
+          prerelease: false

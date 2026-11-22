@@ -22,7 +22,7 @@ import logging
 
 from flask import jsonify, request, abort, Blueprint
 
-from openlp.core.api.lib import login_required
+from openlp.core.api.lib import login_required, call_on_main_thread
 from openlp.core.common.registry import Registry
 from openlp.core.common.utils import is_uuid
 
@@ -111,3 +111,42 @@ def delete_item():
     log.debug('service/v2/delete_item')
     getattr(Registry().get('service_manager'), 'servicemanager_delete_item').emit()
     return '', 204
+
+
+@service_views.route('/preview', methods=['POST'])
+@service_views.route('/preview/<item_id>', methods=['POST'])
+@login_required
+def service_preview(item_id=None):
+    """
+    Load a service item into the Preview controller without sending it straight to Live.
+    """
+    log.debug('service/v2/preview')
+    data = request.json or {}
+    item_id = item_id or data.get('id') or data.get('uid')
+    if item_id is None or item_id == '':
+        abort(400)
+    service_manager = Registry().get('service_manager')
+    preview_controller = Registry().get('preview_controller')
+    if not service_manager or not preview_controller:
+        abort(400)
+
+    target_service_item = None
+    if is_uuid(str(item_id)):
+        for entry in service_manager.service_items:
+            if str(entry['service_item'].unique_identifier) == str(item_id):
+                target_service_item = entry['service_item']
+                break
+    else:
+        try:
+            idx = int(item_id)
+            if 0 <= idx < len(service_manager.service_items):
+                target_service_item = service_manager.service_items[idx]['service_item']
+        except ValueError:
+            abort(400)
+
+    if not target_service_item:
+        abort(404)
+
+    call_on_main_thread(lambda: preview_controller.add_service_manager_item(target_service_item, 0))
+    return '', 204
+

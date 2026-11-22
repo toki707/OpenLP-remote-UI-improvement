@@ -20,11 +20,12 @@
 ##########################################################################
 import logging
 
-from openlp.core.api.lib import login_required
+from pathlib import Path
+from openlp.core.api.lib import login_required, call_on_main_thread
 from openlp.core.common import ThemeLevel
 from openlp.core.common.json import OpenLPJSONEncoder
 from openlp.core.common.registry import Registry
-from openlp.core.lib import image_to_data_uri
+from openlp.core.lib import image_to_data_uri, create_thumb
 
 import json
 from flask import jsonify, request, abort, Blueprint, Response
@@ -43,6 +44,7 @@ def controller_live_items():
         live_item = current_item.to_dict()
         live_item['slides'][live_controller.selected_row]['selected'] = True
         live_item['id'] = str(current_item.unique_identifier)
+        _enrich_image_slides(current_item, live_item)
     json_live_item = json.dumps(live_item, cls=OpenLPJSONEncoder)
     return Response(json_live_item, mimetype='application/json')
 
@@ -251,3 +253,96 @@ def controller_clear(controller):
         return '', 204
     else:
         return '', 404
+
+
+def _enrich_image_slides(service_item, item_dict):
+    """
+    Ensure image slides always include a base64 ``img`` preview data URI for the mobile remote.
+    """
+    if not service_item or not hasattr(service_item, 'is_image') or service_item.is_image() is not True:
+        return item_dict
+    frames = service_item.get_frames()
+    slides = item_dict.get('slides', [])
+    for idx, slide in enumerate(slides):
+        if not slide.get('img') and idx < len(frames):
+            frame = frames[idx]
+            thumb = frame.get('thumbnail')
+            if thumb:
+                thumb_path = Path(thumb)
+                if not thumb_path.exists():
+                    create_thumb(Path(service_item.get_frame_path(idx)), thumb_path, False)
+                if thumb_path.exists():
+                    slide['img'] = image_to_data_uri(thumb_path)
+            if not slide.get('img') and frame.get('path'):
+                src_path = Path(frame['path'])
+                if src_path.exists():
+                    slide['img'] = image_to_data_uri(src_path)
+    return item_dict
+
+
+@controller_views.route('/preview-items')
+def controller_preview_items():
+    """
+    Return the current service item and slides loaded in the Preview controller.
+    """
+    log.debug('controller-v2-preview-items')
+    preview_controller = Registry().get('preview_controller')
+    current_item = preview_controller.service_item if preview_controller else None
+    preview_item = {}
+    if current_item:
+        preview_item = current_item.to_dict()
+        selected_row = preview_controller.selected_row or 0
+        if preview_item.get('slides') and 0 <= selected_row < len(preview_item['slides']):
+            preview_item['slides'][selected_row]['selected'] = True
+        preview_item['id'] = str(current_item.unique_identifier)
+        _enrich_image_slides(current_item, preview_item)
+    json_preview_item = json.dumps(preview_item, cls=OpenLPJSONEncoder)
+    return Response(json_preview_item, mimetype='application/json')
+
+
+@controller_views.route('/preview/show', methods=['POST'])
+@login_required
+def controller_preview_set():
+    """
+    Select a specific slide index in the Preview controller.
+    """
+    log.debug('controller-v2-preview-show-post')
+    data = request.json
+    if not data:
+        abort(400)
+    num = data.get('id', -1)
+    Registry().get('preview_controller').slidecontroller_preview_set.emit([num])
+    return '', 204
+
+
+@controller_views.route('/preview/progress', methods=['POST'])
+@login_required
+def controller_preview_direction():
+    """
+    Move to next or previous slide in the Preview controller.
+    """
+    log.debug('controller-v2-preview-progress-post')
+    allowed_actions = ['next', 'previous']
+    data = request.json
+    if not data:
+        abort(400)
+    action = data.get('action', '').lower()
+    if action not in allowed_actions:
+        abort(400)
+    getattr(Registry().get('preview_controller'), f'slidecontroller_preview_{action}').emit()
+    return '', 204
+
+
+@controller_views.route('/preview/go-live', methods=['POST'])
+@login_required
+def controller_preview_go_live():
+    """
+    Send the item currently in the Preview controller to the Live controller.
+    """
+    log.debug('controller-v2-preview-go-live-post')
+    preview_controller = Registry().get('preview_controller')
+    if not preview_controller or not preview_controller.service_item:
+        abort(400)
+    call_on_main_thread(preview_controller.on_go_live)
+    return '', 204
+

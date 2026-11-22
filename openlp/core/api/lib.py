@@ -19,9 +19,66 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>. #
 ##########################################################################
 import json
+import logging
+import threading
 from flask import jsonify, Response, request
 from functools import wraps
+from PyQt5 import QtCore
 from openlp.core.common.registry import Registry
+
+log = logging.getLogger(__name__)
+
+
+class MainThreadDispatcher(QtCore.QObject):
+    """
+    Helper QObject to safely dispatch callables from HTTP worker threads onto the main Qt GUI thread.
+    """
+    execute_signal = QtCore.pyqtSignal(object)
+
+    def __init__(self):
+        super().__init__()
+        app = QtCore.QCoreApplication.instance()
+        if app and self.thread() != app.thread():
+            self.moveToThread(app.thread())
+        self.execute_signal.connect(self._on_execute)
+
+    @QtCore.pyqtSlot(object)
+    def _on_execute(self, task):
+        fn, event, box = task
+        try:
+            box['value'] = fn()
+        except Exception as exc:
+            log.exception('Error executing API task on main thread')
+            box['error'] = exc
+        finally:
+            if event:
+                event.set()
+
+
+_dispatcher = None
+
+
+def call_on_main_thread(fn, wait=True, timeout=5.0):
+    """
+    Execute ``fn`` on the main Qt GUI thread. If already on the main thread (or no QCoreApplication is running),
+    executes synchronously.
+    """
+    global _dispatcher
+    app = QtCore.QCoreApplication.instance()
+    if app is None or QtCore.QThread.currentThread() == app.thread():
+        return fn()
+    if _dispatcher is None:
+        _dispatcher = MainThreadDispatcher()
+    event = threading.Event() if wait else None
+    box = {'value': None, 'error': None}
+    _dispatcher.execute_signal.emit((fn, event, box))
+    if wait and event:
+        event.wait(timeout)
+        if box['error'] is not None:
+            raise box['error']
+        return box['value']
+    return None
+
 
 
 def login_required(f):

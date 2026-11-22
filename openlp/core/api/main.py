@@ -20,29 +20,39 @@
 ##########################################################################
 
 import os
+from pathlib import Path
 
 from flask import Blueprint, send_from_directory
 from openlp.core.common.applocation import AppLocation
 from openlp.core.common.mime import get_mime_type
 
 main_views = Blueprint('main', __name__)
+BUNDLED_REMOTE_DIR = Path(__file__).parent / 'remote_client'
+
+
+def _get_remotes_dir():
+    remotes_dir = AppLocation.get_section_data_path('remotes')
+    if os.path.isfile(remotes_dir / 'index.html'):
+        return remotes_dir
+    if BUNDLED_REMOTE_DIR.is_dir():
+        return BUNDLED_REMOTE_DIR
+    return remotes_dir
 
 
 @main_views.route('/', defaults={'path': ''})
 @main_views.route('/<path>')
 def index(path):
-    if os.path.isfile(AppLocation.get_section_data_path('remotes') / path):
-        return send_from_directory(str(AppLocation.get_section_data_path('remotes')),
-                                   path, mimetype=get_mime_type(path))
+    remotes_dir = _get_remotes_dir()
+    if path and os.path.isfile(remotes_dir / path):
+        return send_from_directory(str(remotes_dir), path, mimetype=get_mime_type(path))
     else:
-        return send_from_directory(str(AppLocation.get_section_data_path('remotes')),
-                                   'index.html', mimetype='text/html')
+        return send_from_directory(str(remotes_dir), 'index.html', mimetype='text/html')
 
 
 @main_views.route('/assets/<path:path>')
 def assets(path):
-    return send_from_directory(str(AppLocation.get_section_data_path('remotes') / 'assets'),
-                               path, mimetype=get_mime_type(path))
+    remotes_dir = _get_remotes_dir()
+    return send_from_directory(str(remotes_dir / 'assets'), path, mimetype=get_mime_type(path))
 
 
 @main_views.route('/stage/<path>/')

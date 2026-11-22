@@ -592,6 +592,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow, LogMixin, RegistryPropert
         self.load_settings()
         self.restore_current_media_manager_item()
         Registry().execute('theme_change_global')
+        try:
+            from openlp.core.ui.simplifiedmode import attach_simplified_mode
+            attach_simplified_mode(self)
+        except Exception:
+            self.log_exception('Unable to attach simplified mode toolbar')
 
     def restore_current_media_manager_item(self):
         """
