@@ -248,3 +248,173 @@ def test_plugin_songs_transpose_marks_selected_slide(flask_client, settings):
     # THEN: The service item response shouldn't match normal response and should be a service_item response
     response = service_item_res.json
     assert response['slides'][1]['selected'] is True
+
+
+def test_plugin_preview_endpoint(flask_client, settings):
+    """Test that /api/v2/plugins/<plugin>/preview builds a service item and sends it to preview_controller"""
+    fake_preview_controller = MagicMock()
+    fake_service_item = MagicMock()
+    mock_plugin = MagicMock()
+    mock_plugin.status = PluginStatus.Active
+    mock_plugin.media_item.create_item_from_id.return_value = 'item-obj'
+    mock_plugin.media_item.build_service_item.return_value = fake_service_item
+    mock_plugin_manager = MagicMock(**{'get_plugin_by_name.return_value': mock_plugin})
+    Registry().register('plugin_manager', mock_plugin_manager)
+    Registry().register('preview_controller', fake_preview_controller)
+
+    res = flask_client.post('/api/v2/plugins/bibles/preview', json={'id': 'Jean 3:16'})
+    assert res.status_code == 204
+    fake_preview_controller.add_service_item.assert_called_once_with(fake_service_item)
+    assert fake_service_item.from_plugin is True
+
+    res_bad = flask_client.post('/api/v2/plugins/bibles/preview', json={})
+    assert res_bad.status_code == 400
+
+
+def test_list_images_endpoint(flask_client, settings, tmp_path):
+    """Test that /api/v2/plugins/images/list returns image metadata and thumbnails"""
+    from unittest.mock import patch
+    img_file = tmp_path / 'affiche.png'
+    img_file.write_bytes(b'png-bytes')
+    thumb_file = tmp_path / 'affiche_thumb.png'
+    thumb_file.write_bytes(b'thumb-bytes')
+
+    fake_db_item = MagicMock()
+    fake_db_item.id = 1
+    fake_db_item.file_path = str(img_file)
+
+    mock_plugin = MagicMock()
+    mock_plugin.status = PluginStatus.Active
+    mock_plugin.media_item.manager.get_all_objects.return_value = [fake_db_item]
+    mock_plugin.media_item.generate_thumbnail_path.return_value = thumb_file
+    mock_plugin_manager = MagicMock(**{'get_plugin_by_name.return_value': mock_plugin})
+    Registry().register('plugin_manager', mock_plugin_manager)
+
+    with patch('openlp.core.api.versions.v2.plugins.image_to_data_uri', return_value='data:image/png;base64,123'):
+        res = flask_client.get('/api/v2/plugins/images/list')
+        assert res.status_code == 200
+        data = res.get_json()
+        assert len(data) == 1
+        assert data[0]['filename'] == 'affiche.png'
+        assert data[0]['thumbnail'] == 'data:image/png;base64,123'
+
+
+def test_upload_image_endpoint(flask_client, settings, tmp_path):
+    """Test uploading a base64 image from mobile gallery and triggering preview/live/service"""
+    from unittest.mock import patch
+    thumb_file = tmp_path / 'uploaded_thumb.png'
+    thumb_file.write_bytes(b'thumb')
+
+    fake_preview_controller = MagicMock()
+    mock_plugin = MagicMock()
+    mock_plugin.status = PluginStatus.Active
+    mock_plugin.media_item.manager.get_object_filtered.return_value = None
+    mock_plugin.media_item.generate_thumbnail_path.return_value = thumb_file
+    mock_plugin.media_item.build_service_item.return_value = MagicMock()
+    mock_plugin_manager = MagicMock(**{'get_plugin_by_name.return_value': mock_plugin})
+    Registry().register('plugin_manager', mock_plugin_manager)
+    Registry().register('preview_controller', fake_preview_controller)
+
+    tiny_b64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
+    with patch('openlp.core.api.versions.v2.plugins.AppLocation.get_section_data_path', return_value=tmp_path), \
+         patch('openlp.core.api.versions.v2.plugins.create_thumb'), \
+         patch('openlp.core.api.versions.v2.plugins.image_to_data_uri', return_value='data:image/png;base64,THUMB'):
+        for act in ('preview', 'live', 'service'):
+            res = flask_client.post('/api/v2/plugins/images/upload', json={
+                'filename': f'gallery_{act}.png',
+                'data': tiny_b64,
+                'action': act
+            })
+            assert res.status_code == 201
+            body = res.get_json()
+            assert body['thumbnail'] == 'data:image/png;base64,THUMB'
+        assert fake_preview_controller.add_service_item.called
+        assert mock_plugin.media_item.go_live.called
+        assert mock_plugin.media_item.add_to_service.called
+
+
+def test_custom_list_and_save_endpoints(flask_client, settings):
+    """Test listing and creating/updating custom slides via /api/v2/plugins/custom/list and /save"""
+    from openlp.plugins.custom.lib.customxmlhandler import CustomXML
+    cxml = CustomXML()
+    cxml.add_verse_to_lyrics('custom', '1', 'MARCHER PAR LA FOI')
+    xml_text = str(cxml.extract_xml(), 'utf-8')
+
+    fake_slide = MagicMock()
+    fake_slide.id = 10
+    fake_slide.title = 'Thème de la Parole'
+    fake_slide.text = xml_text
+    fake_slide.credits = '2 Corinthiens 5:7'
+    fake_slide.theme_name = 'Parole Biblique'
+
+    fake_preview_controller = MagicMock()
+    mock_plugin = MagicMock()
+    mock_plugin.status = PluginStatus.Active
+    mock_plugin.db_manager.get_all_objects.return_value = [fake_slide]
+    mock_plugin.db_manager.get_object.return_value = fake_slide
+    mock_plugin.media_item.build_service_item.return_value = MagicMock()
+    mock_plugin_manager = MagicMock(**{'get_plugin_by_name.return_value': mock_plugin})
+    Registry().register('plugin_manager', mock_plugin_manager)
+    Registry().register('preview_controller', fake_preview_controller)
+
+    res_list = flask_client.get('/api/v2/plugins/custom/list')
+    assert res_list.status_code == 200
+    items = res_list.get_json()
+    assert len(items) == 1
+    assert items[0]['title'] == 'Thème de la Parole'
+    assert items[0]['slides'] == ['MARCHER PAR LA FOI']
+
+    for act in ('preview', 'live', 'service'):
+        res_save = flask_client.post('/api/v2/plugins/custom/save', json={
+            'id': 10 if act == 'preview' else None,
+            'title': 'Nouveau Thème',
+            'text': 'Diapo 1\n---\nDiapo 2',
+            'credits': 'Pasteur',
+            'theme_name': 'Message du Jour',
+            'action': act
+        })
+        assert res_save.status_code == 200
+        saved = res_save.get_json()
+        assert saved['title'] == 'Nouveau Thème'
+        assert len(saved['slides']) == 2
+
+
+def test_list_bible_books_endpoint(flask_client, settings):
+    """Test /api/v2/plugins/bibles/books returns books and chapter counts"""
+    fake_book = MagicMock()
+    fake_book.get_name.return_value = 'Jean'
+    fake_book.abbreviation = 'Jn'
+
+    mock_plugin = MagicMock()
+    mock_plugin.status = PluginStatus.Active
+    mock_plugin.manager.get_bibles.return_value = {'Louis Segond': MagicMock()}
+    mock_plugin.media_item.bible.name = 'Louis Segond'
+    mock_plugin.media_item.bible.get_books.return_value = [fake_book]
+    mock_plugin.manager.get_chapter_count.return_value = 21
+    mock_plugin_manager = MagicMock(**{'get_plugin_by_name.return_value': mock_plugin})
+    Registry().register('plugin_manager', mock_plugin_manager)
+
+    res = flask_client.get('/api/v2/plugins/bibles/books')
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data['primary_bible'] == 'Louis Segond'
+    assert data['books'][0]['name'] == 'Jean'
+    assert data['books'][0]['chapters'] == 21
+
+
+def test_mobile_endpoints_inactive_plugins_and_error_branches(flask_client, settings):
+    """Test error branches and inactive plugin responses for new mobile endpoints"""
+    inactive_plugin = MagicMock()
+    inactive_plugin.status = PluginStatus.Disabled
+    mock_plugin_manager = MagicMock(**{'get_plugin_by_name.return_value': inactive_plugin})
+    Registry().register('plugin_manager', mock_plugin_manager)
+
+    assert flask_client.get('/api/v2/plugins/images/list').get_json() == []
+    assert flask_client.get('/api/v2/plugins/custom/list').get_json() == []
+    assert flask_client.get('/api/v2/plugins/bibles/books').get_json() == {
+        'primary_bible': '', 'bibles': [], 'books': []
+    }
+    assert flask_client.post('/api/v2/plugins/images/upload', json={}).status_code == 400
+    assert flask_client.post('/api/v2/plugins/custom/save', json={}).status_code == 400
+
+

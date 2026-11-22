@@ -86,3 +86,48 @@ def test_delete_service_items(flask_client, settings):
     res = flask_client.post('/api/v2/service/delete_item', json='')
     assert res.status_code == 204
     fake_service_manager.servicemanager_delete_item.emit.assert_called_once()
+
+
+def test_service_preview_by_uuid(flask_client, settings):
+    test_uuid = '12345678-1234-5678-1234-567812345678'
+    fake_item = MagicMock()
+    fake_item.unique_identifier = test_uuid
+    fake_service_manager = MagicMock()
+    fake_service_manager.service_items = [{'service_item': fake_item}]
+    fake_preview_controller = MagicMock()
+    Registry().register('service_manager', fake_service_manager)
+    Registry().register('preview_controller', fake_preview_controller)
+
+    res = flask_client.post('/api/v2/service/preview', json={'id': test_uuid})
+    assert res.status_code == 204
+    fake_preview_controller.add_service_manager_item.assert_called_once_with(fake_item, 0)
+
+
+def test_service_preview_by_index(flask_client, settings):
+    fake_item = MagicMock()
+    fake_item.unique_identifier = 'item-0'
+    fake_service_manager = MagicMock()
+    fake_service_manager.service_items = [{'service_item': fake_item}]
+    fake_preview_controller = MagicMock()
+    Registry().register('service_manager', fake_service_manager)
+    Registry().register('preview_controller', fake_preview_controller)
+
+    res = flask_client.post('/api/v2/service/preview', json={'id': '0'})
+    assert res.status_code == 204
+    fake_preview_controller.add_service_manager_item.assert_called_once_with(fake_item, 0)
+
+
+def test_service_preview_errors(flask_client, settings):
+    fake_service_manager = MagicMock()
+    fake_service_manager.service_items = []
+    fake_preview_controller = MagicMock()
+    Registry().register('service_manager', fake_service_manager)
+    Registry().register('preview_controller', fake_preview_controller)
+
+    res_missing = flask_client.post('/api/v2/service/preview', json={})
+    res_invalid = flask_client.post('/api/v2/service/preview', json={'id': 'not-an-int'})
+    res_not_found = flask_client.post('/api/v2/service/preview', json={'id': '99'})
+    assert res_missing.status_code == 400
+    assert res_invalid.status_code == 400
+    assert res_not_found.status_code == 404
+

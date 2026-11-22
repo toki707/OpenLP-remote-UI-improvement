@@ -293,3 +293,103 @@ def test_controller_clear_live(flask_client: FlaskClient, registry: Registry, se
 def test_controller_clear_invalid(flask_client: FlaskClient, registry: Registry, settings: Settings):
     res = flask_client.post('/api/v2/controller/clear/my_screen')
     assert res.status_code == 404
+
+
+def test_retrieve_preview_items(flask_client: FlaskClient, registry: Registry, settings: Settings):
+    """
+    Test the preview-items endpoint with a mocked preview service item
+    """
+    fake_preview_controller = MagicMock()
+    fake_preview_controller.service_item = MagicMock()
+    fake_preview_controller.selected_row = 0
+    fake_preview_controller.service_item.unique_identifier = 99
+    fake_preview_controller.service_item.is_image.return_value = False
+    fake_preview_controller.service_item.to_dict.return_value = {'slides': [{'selected': False}]}
+    Registry().register('preview_controller', fake_preview_controller)
+
+    res = flask_client.get('/api/v2/controller/preview-items').get_json()
+    assert res == {'slides': [{'selected': True}], 'id': '99'}
+
+
+@patch('openlp.core.api.versions.v2.controller.image_to_data_uri')
+@patch('openlp.core.api.versions.v2.controller.create_thumb')
+def test_retrieve_preview_items_enriches_image_slides(mock_create_thumb: MagicMock,
+                                                      mock_image_to_data_uri: MagicMock,
+                                                      flask_client: FlaskClient,
+                                                      registry: Registry,
+                                                      settings: Settings,
+                                                      tmp_path: Path):
+    """
+    Test that image slides in preview-items get enriched with base64 data URI thumbnails
+    """
+    img_file = tmp_path / 'poster.png'
+    img_file.write_bytes(b'fake-img')
+    thumb_file = tmp_path / 'poster_thumb.png'
+    mock_image_to_data_uri.return_value = 'data:image/png;base64,AAA'
+
+    fake_preview_controller = MagicMock()
+    fake_item = MagicMock()
+    fake_item.unique_identifier = 77
+    fake_item.is_image.return_value = True
+    fake_item.get_frames.return_value = [{'thumbnail': thumb_file, 'path': str(img_file)}]
+    fake_item.get_frame_path.return_value = str(img_file)
+    fake_item.to_dict.return_value = {'slides': [{'selected': False, 'text': 'poster.png'}]}
+    fake_preview_controller.service_item = fake_item
+    fake_preview_controller.selected_row = 0
+    Registry().register('preview_controller', fake_preview_controller)
+
+    res = flask_client.get('/api/v2/controller/preview-items').get_json()
+    assert res['slides'][0]['img'] == 'data:image/png;base64,AAA'
+    assert res['slides'][0]['selected'] is True
+
+
+def test_controller_preview_set_calls_preview_controller(flask_client: FlaskClient, registry: Registry,
+                                                         settings: Settings):
+    fake_preview_controller = MagicMock()
+    Registry().register('preview_controller', fake_preview_controller)
+    res = flask_client.post('/api/v2/controller/preview/show', json={'id': 2})
+    assert res.status_code == 204
+    fake_preview_controller.slidecontroller_preview_set.emit.assert_called_once_with([2])
+
+
+def test_controller_preview_set_aborts_on_missing_data(flask_client: FlaskClient, registry: Registry,
+                                                       settings: Settings):
+    res = flask_client.post('/api/v2/controller/preview/show', json={})
+    assert res.status_code == 400
+
+
+def test_controller_preview_direction_calls_preview_controller(flask_client: FlaskClient, registry: Registry,
+                                                               settings: Settings):
+    fake_preview_controller = MagicMock()
+    Registry().register('preview_controller', fake_preview_controller)
+    res = flask_client.post('/api/v2/controller/preview/progress', json={'action': 'next'})
+    assert res.status_code == 204
+    fake_preview_controller.slidecontroller_preview_next.emit.assert_called_once()
+
+
+def test_controller_preview_direction_aborts_on_invalid_action(flask_client: FlaskClient, registry: Registry,
+                                                               settings: Settings):
+    res1 = flask_client.post('/api/v2/controller/preview/progress', json={})
+    res2 = flask_client.post('/api/v2/controller/preview/progress', json={'action': 'invalid'})
+    assert res1.status_code == 400
+    assert res2.status_code == 400
+
+
+def test_controller_preview_go_live_calls_on_go_live(flask_client: FlaskClient, registry: Registry,
+                                                     settings: Settings):
+    fake_preview_controller = MagicMock()
+    fake_preview_controller.service_item = MagicMock()
+    Registry().register('preview_controller', fake_preview_controller)
+    res = flask_client.post('/api/v2/controller/preview/go-live', json={})
+    assert res.status_code == 204
+    fake_preview_controller.on_go_live.assert_called_once()
+
+
+def test_controller_preview_go_live_aborts_when_no_item(flask_client: FlaskClient, registry: Registry,
+                                                        settings: Settings):
+    fake_preview_controller = MagicMock()
+    fake_preview_controller.service_item = None
+    Registry().register('preview_controller', fake_preview_controller)
+    res = flask_client.post('/api/v2/controller/preview/go-live', json={})
+    assert res.status_code == 400
+
