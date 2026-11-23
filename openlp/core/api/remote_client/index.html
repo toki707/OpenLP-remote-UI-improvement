@@ -44,6 +44,9 @@
       --ease-spring: cubic-bezier(0.25, 1.25, 0.5, 1);
       --dur-fast: 150ms;
       --dur-med: 260ms;
+
+      /* PC Resizable Monitors Width */
+      --pc-stage-width: 580px;
     }
 
     :root,
@@ -199,6 +202,14 @@
     }
 
     .mac-transport-card {
+      display: none;
+    }
+
+    .pc-monitors-toolbar {
+      display: none;
+    }
+
+    .pc-resizer {
       display: none;
     }
 
@@ -1222,17 +1233,85 @@
       }
 
       .workspace-body {
-        max-width: 1180px;
+        max-width: 1560px;
         padding: 24px;
         display: grid;
-        grid-template-columns: 360px 1fr;
-        gap: 24px;
+        grid-template-columns: minmax(300px, min(var(--pc-stage-width), 64%)) 14px minmax(0, 1fr);
+        gap: 6px;
         align-items: start;
       }
 
       .stage-col {
         position: sticky;
         top: 78px;
+        min-width: 0;
+      }
+
+      .pc-monitors-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding-bottom: 8px;
+        border-bottom: 0.5px solid var(--sys-separator);
+      }
+
+      .pc-monitors-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--sys-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      .pc-resizer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 14px;
+        height: 280px;
+        position: sticky;
+        top: 140px;
+        cursor: col-resize;
+        user-select: none;
+        touch-action: none;
+      }
+
+      .pc-resizer::before {
+        content: "";
+        width: 4px;
+        height: 48px;
+        border-radius: 999px;
+        background: var(--sys-separator);
+        transition: background-color var(--dur-fast), height var(--dur-fast);
+      }
+
+      .pc-resizer:hover::before,
+      .pc-resizer.is-dragging::before {
+        background: var(--sys-blue);
+        height: 76px;
+      }
+
+      [data-pc-monitors="stacked"] .monitors-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .monitor-screen {
+        padding: 16px;
+      }
+
+      .monitor-text {
+        font-size: 14.5px;
+        line-height: 1.42;
+        -webkit-line-clamp: 6;
+      }
+
+      [data-pc-preset="xl"] .monitor-text,
+      [data-pc-monitors="stacked"] .monitor-text {
+        font-size: 16.5px;
+        line-height: 1.45;
+        -webkit-line-clamp: 8;
       }
 
       .mac-transport-card {
@@ -1354,6 +1433,18 @@
         <!-- STAGE COLUMN: DUAL MONITORS + DESKTOP TRANSPORT -->
         <div class="stage-col">
           <div class="ios-card">
+            <!-- PC-only Monitor Size & Layout Switcher -->
+            <div class="pc-monitors-toolbar">
+              <span class="pc-monitors-title">Moniteurs</span>
+              <div id="pc-stage-size-seg" class="ios-seg ios-seg-sm" role="group" aria-label="Taille des moniteurs">
+                <span class="ios-seg-thumb" aria-hidden="true"></span>
+                <button type="button" class="ios-seg-btn" data-preset="m" onclick="setPcMonitorPreset('m')">M</button>
+                <button type="button" class="ios-seg-btn is-active" data-preset="l" onclick="setPcMonitorPreset('l')">L</button>
+                <button type="button" class="ios-seg-btn" data-preset="xl" onclick="setPcMonitorPreset('xl')">XL</button>
+                <button type="button" class="ios-seg-btn" data-preset="stacked" onclick="setPcMonitorPreset('stacked')">Empilé</button>
+              </div>
+            </div>
+
             <div class="monitors-grid">
               <!-- Preview Monitor -->
               <div class="monitor-col">
@@ -1414,6 +1505,9 @@
             </div>
           </div>
         </div>
+
+        <!-- PC-only Draggable Column Splitter -->
+        <div id="pc-resizer" class="pc-resizer" title="Glisser pour redimensionner (double-clic pour réinitialiser)" aria-label="Redimensionner la zone Aperçu et Direct"></div>
 
         <!-- SECTIONS COLUMN -->
         <div class="sections-col">
@@ -1704,7 +1798,73 @@
     }
 
     function refreshAllThumbs() {
-      ['ios-nav-seg', 'slides-mode-seg', 'pop-display-seg', 'mac-display-seg'].forEach(positionSegThumb);
+      ['ios-nav-seg', 'slides-mode-seg', 'pop-display-seg', 'mac-display-seg', 'pc-stage-size-seg'].forEach(positionSegThumb);
+    }
+
+    /* ==================== PC MONITOR SIZING & DRAG RESIZER ==================== */
+    const PC_STAGE_PRESETS = {
+      m: { width: 440, mode: 'side' },
+      l: { width: 580, mode: 'side' },
+      xl: { width: 760, mode: 'side' },
+      stacked: { width: 520, mode: 'stacked' }
+    };
+
+    function applyPcMonitorLayout(preset, customWidth) {
+      const cfg = PC_STAGE_PRESETS[preset] || PC_STAGE_PRESETS.l;
+      const width = customWidth || cfg.width;
+      document.documentElement.style.setProperty('--pc-stage-width', width + 'px');
+      document.documentElement.setAttribute('data-pc-monitors', cfg.mode);
+      document.documentElement.setAttribute('data-pc-preset', preset || 'custom');
+      document.querySelectorAll('#pc-stage-size-seg [data-preset]').forEach(btn => {
+        btn.classList.toggle('is-active', btn.getAttribute('data-preset') === preset);
+      });
+      requestAnimationFrame(() => positionSegThumb('pc-stage-size-seg'));
+    }
+
+    function setPcMonitorPreset(preset) {
+      const cfg = PC_STAGE_PRESETS[preset] || PC_STAGE_PRESETS.l;
+      localStorage.setItem('openlp_pc_stage_preset', preset);
+      localStorage.setItem('openlp_pc_stage_width', String(cfg.width));
+      applyPcMonitorLayout(preset, cfg.width);
+    }
+
+    function initPcResizer() {
+      const resizer = document.getElementById('pc-resizer');
+      const workspace = document.querySelector('.workspace-body');
+      if (!resizer || !workspace) return;
+
+      let dragging = false;
+      let startX = 0;
+      let startWidth = 580;
+
+      resizer.addEventListener('pointerdown', (e) => {
+        if (window.innerWidth < 900) return;
+        dragging = true;
+        startX = e.clientX;
+        const stageEl = document.querySelector('.stage-col');
+        startWidth = stageEl ? stageEl.getBoundingClientRect().width : 580;
+        resizer.classList.add('is-dragging');
+        resizer.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+
+      resizer.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const maxAllowed = Math.max(460, workspace.getBoundingClientRect().width - 360);
+        const nextWidth = Math.round(Math.max(340, Math.min(maxAllowed, startWidth + (e.clientX - startX))));
+        document.documentElement.style.setProperty('--pc-stage-width', nextWidth + 'px');
+        localStorage.setItem('openlp_pc_stage_width', String(nextWidth));
+      });
+
+      const stopDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        resizer.classList.remove('is-dragging');
+      };
+
+      resizer.addEventListener('pointerup', stopDrag);
+      resizer.addEventListener('pointercancel', stopDrag);
+      resizer.addEventListener('dblclick', () => setPcMonitorPreset('l'));
     }
 
     function getPluginIconSvg(pluginName) {
@@ -2524,6 +2684,10 @@
 
     window.addEventListener('DOMContentLoaded', async () => {
       applyColorTheme(currentColorTheme);
+      const savedPreset = localStorage.getItem('openlp_pc_stage_preset') || 'l';
+      const savedWidth = parseInt(localStorage.getItem('openlp_pc_stage_width') || '0', 10);
+      applyPcMonitorLayout(savedPreset, savedWidth > 0 ? savedWidth : null);
+      initPcResizer();
       populateBibleDropdowns();
       requestAnimationFrame(refreshAllThumbs);
       await Promise.all([

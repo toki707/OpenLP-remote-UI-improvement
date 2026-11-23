@@ -80,9 +80,13 @@ de navigation et de superposition flottants :
     5 sections avec icônes et l'état de connexion du serveur OpenLP.
   * Barre d'outils unifiée en haut (`.mac-toolbar`) intégrant directement le
     contrôle segmenté de sortie du projecteur (`Noir | Thème | Bureau | Afficher`).
-  * Espace de travail à 2 colonnes : moniteurs 16:9 (`Aperçu` et `Direct` avec
-    anneau rouge `1.5px`) + steppers d'avancement fixes à gauche, et section
-    active à droite.
+  * Espace de travail à 2 colonnes (`max-width: 1560px`) : moniteurs 16:9
+    (`Aperçu` et `Direct` avec anneau rouge `1.5px`) + steppers d'avancement
+    fixes à gauche, et section active à droite.
+  * Redimensionnement des moniteurs sur PC : sélecteur `M | L | XL | Empilé`
+    (`#pc-stage-size-seg`) et poignée de glisser-déposer (`#pc-resizer`) entre
+    les colonnes (double-clic pour réinitialiser), avec mémorisation dans
+    `localStorage` (`openlp_pc_stage_preset`, `openlp_pc_stage_width`).
 
 ---------------------------------------------------------------------------
 3. FONCTIONNALITÉS ET ROUTES API CONSERVÉES (100 % COMPATIBLE)
