@@ -44,6 +44,12 @@ def test_main_index_and_assets_routes(tmp_path):
         res_index = client.get('/')
         assert res_index.status_code == 200
         assert b'OpenLP Remote' in res_index.data
+        assert b'data-theme="light"' in res_index.data
+        assert b'ios-navbar' in res_index.data
+        assert b'ios-seg' in res_index.data
+        assert b'ios-dock' in res_index.data
+        assert b'mac-sidebar' in res_index.data
+        assert b'mac-toolbar' in res_index.data
 
         res_asset = client.get('/assets/version.js')
         assert res_asset.status_code == 200

@@ -1,7 +1,128 @@
-OpenLP Manual
-=============
+OpenLP Manual & Documentation — Branche apple-ui (Apple HIG & Liquid Glass)
+===========================================================================
 
-If you're reading this file, you're probably looking for the OpenLP manual. The
-manual is hosted online at http://manual.openlp.org/. If you want to help with
-the manual, contact the OpenLP team via IRC in the #openlp.org channel on the
-Freenode network.
+If you're reading this file, you're probably looking for the OpenLP manual or
+the technical documentation for the Apple HIG (iOS 18 & macOS Sequoia) &
+Liquid Glass Web Remote redesign introduced on the `apple-ui` branch.
+The upstream OpenLP manual is hosted online at http://manual.openlp.org/.
+
+---------------------------------------------------------------------------
+1. OBJECTIF DE LA BRANCHE `apple-ui`
+---------------------------------------------------------------------------
+
+La branche `apple-ui` refond intégralement le design visuel et l'ergonomie
+de la télécommande web d'OpenLP (`openlp/core/api/remote_client/index.html`)
+selon les principes Apple Human Interface Guidelines (iOS 18 sur mobile /
+tablette et macOS Sequoia sur ordinateur), tout en conservant 100 % des
+fonctionnalités, routes API REST v2 et synchronisations WebSocket existantes.
+
+Aucune dépendance externe ni CDN n'est utilisée afin de garantir un
+fonctionnement 100 % autonome sur un routeur Wi-Fi local d'église sans
+accès à Internet.
+
+---------------------------------------------------------------------------
+2. ARCHITECTURE VISUELLE & SYSTÈME DE DESIGN APPLE HIG
+---------------------------------------------------------------------------
+
+2.1. Palette Système (Clair par défaut & Mode Sombre OLED)
+- Mode Clair (`[data-theme="light"]`, activé par défaut) :
+  * Fond groupé : `#F2F2F7` (`--sys-bg-grouped`)
+  * Cartes & listes : `#FFFFFF` (`--sys-bg-card`)
+  * Remplissages tertiaires : `rgba(118, 118, 128, 0.13)` (`--sys-fill-tertiary`)
+  * Texte primaire : `#000000`, secondaire : `rgba(60, 60, 67, 0.60)`
+  * Séparateurs fins `0.5px` : `rgba(60, 60, 67, 0.18)`
+  * Couleurs d'accentuation système : Bleu `#007AFF`, Vert `#34C759`, Rouge `#FF3B30`
+- Mode Sombre (`[data-theme="dark"]`, persisté dans `localStorage`) :
+  * Fond groupé OLED : `#000000`
+  * Cartes & listes : `#1C1C1E`, surfaces élevées : `#2C2C2E`
+  * Bleu système : `#0A84FF`, Vert : `#30D158`, Rouge : `#FF453A`
+
+2.2. Système Matériel Liquid Glass (Couches 3, 4 et 5)
+Le matériau Liquid Glass (`backdrop-filter: blur(...) saturate(...)` + reflet
+spéculaire interne `--glass-specular`) est appliqué uniquement aux éléments
+de navigation et de superposition flottants :
+- Couche 3 (Navigation & Contrôles flottants) :
+  * Barre supérieure mobile (`.ios-navbar`) aux coins inférieurs arrondis (`26px`).
+  * Dock inférieur flottant en capsule (`.ios-dock`, `border-radius: 999px`).
+  * Barre latérale translucide macOS (`.mac-sidebar`) et barre d'outils unifiée
+    (`.mac-toolbar`) sur grand écran (`>= 900px`).
+- Couche 4 (Popover contextuel) :
+  * Panneau `Sortie du projecteur` (`#display-mode-sheet`) animé par ressort
+    depuis le bouton `Écran` du dock.
+- Couche 5 (Notifications) :
+  * Toast flottant en pilule (`#toast-bar`).
+- Repli d'accessibilité :
+  * `@supports not (backdrop-filter: ...)` et `@media (prefers-reduced-transparency: reduce)`
+    basculent automatiquement sur une surface solide opaque (`--glass-solid`).
+
+2.3. Barre de Navigation en Forme de Pilule & Contrôles Segmentés
+- Sur mobile (`< 900px`), l'ancien tiroir latéral caché est remplacé par une
+  barre de navigation segmentée en forme de pilule (`#ios-nav-seg`,
+  `border-radius: 999px`) dotée d'un curseur glissant continu en capsule
+  (`.ios-seg-thumb`).
+- Les 5 sections sont accessibles en un seul appui :
+  1. `Service` (Ordre du service & Diapositives Aperçu / Direct)
+  2. `Bible` (Sélecteur Livre / Chapitre / Verset + recherche + lecture)
+  3. `Images` (Import direct depuis la galerie du smartphone + bibliothèque)
+  4. `Diapos` (Éditeur et liste de diapositives personnalisées)
+  5. `Thèmes` (Grille de sélection des thèmes visuels OpenLP)
+
+2.4. Listes Groupées iOS (Inset Grouped Lists) & Formulaires
+- Listes `.list-box` sans bordure externe lourde, avec séparateurs `0.5px`
+  indentés à `56px` après les icônes carrées arrondies (`.row-icon`) et
+  pastilles circulaires numérotées (`.slide-badge`) pour les diapositives.
+- Champs de saisie alignés à droite dans des rangées groupées (`.ios-field-row`)
+  pour le sélecteur biblique et l'éditeur de diapositives personnalisées.
+
+2.5. Architecture Responsive Bureau macOS Sequoia (`>= 900px`)
+- À partir de `900px`, l'interface adopte une disposition native macOS/iPadOS :
+  * Barre latérale translucide à gauche (`.mac-sidebar`) regroupant les
+    5 sections avec icônes et l'état de connexion du serveur OpenLP.
+  * Barre d'outils unifiée en haut (`.mac-toolbar`) intégrant directement le
+    contrôle segmenté de sortie du projecteur (`Noir | Thème | Bureau | Afficher`).
+  * Espace de travail à 2 colonnes : moniteurs 16:9 (`Aperçu` et `Direct` avec
+    anneau rouge `1.5px`) + steppers d'avancement fixes à gauche, et section
+    active à droite.
+
+---------------------------------------------------------------------------
+3. FONCTIONNALITÉS ET ROUTES API CONSERVÉES (100 % COMPATIBLE)
+---------------------------------------------------------------------------
+
+Toutes les fonctions JavaScript et routes API v2 fonctionnent à l'identique :
+- Double moniteur 16:9 (`#preview-monitor` & `#live-monitor`) + bouton `Envoyer`
+  (`pushPreviewToLive()` -> `POST /api/v2/controller/preview/go-live`).
+- Navigation d'éléments (`serviceProgress`) et de diapositives (`slideProgress`).
+- Contrôle de l'écran du projecteur (`setDisplayMode` : `blank`, `theme`,
+  `desktop`, `show` -> `POST /api/v2/core/display`).
+- Import d'images depuis la galerie mobile (`handleGalleryFileSelect`,
+  `uploadGalleryImage` -> `POST /api/v2/plugins/images/upload`).
+- Recherche et projection biblique (`loadBibleBooks`, `queryBibleReference`,
+  `triggerBibleAction` -> `/api/v2/plugins/bibles/...`).
+- Création et édition de diapositives personnalisées (`loadCustomSlides`,
+  `saveAndTriggerCustom` -> `/api/v2/plugins/custom/...`).
+- Sélection de thèmes visuels (`loadThemes` -> `/api/v2/controller/themes`).
+- Synchronisation temps réel via WebSocket (`ws://<host>:4317/state`).
+
+---------------------------------------------------------------------------
+4. INSTALLATION & TESTS UNITAIRES (>= 80 % DE COUVERTURE)
+---------------------------------------------------------------------------
+
+4.1. Installation rapide sous Windows
+Exécutez `install_custom_ui.bat` à la racine du dépôt pour copier
+`openlp\core\api\remote_client\index.html` vers `%APPDATA%\openlp\data\remotes\index.html`.
+
+4.2. Exécution des tests unitaires et vérification de la couverture
+Commande pytest :
+  pytest tests/openlp_core/api/test_main.py \
+         tests/openlp_core/api/v2/test_controller.py \
+         tests/openlp_core/api/v2/test_service.py \
+         tests/openlp_core/api/v2/test_plugins.py \
+         tests/openlp_core/ui/test_simplifiedmode.py \
+         --cov=openlp.core.api.lib \
+         --cov=openlp.core.api.main \
+         --cov=openlp.core.api.versions.v2.controller \
+         --cov=openlp.core.api.versions.v2.service \
+         --cov=openlp.core.api.versions.v2.plugins \
+         --cov=openlp.core.ui.simplifiedmode \
+         --cov-report=term-missing \
+         --cov-fail-under=80
