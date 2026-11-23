@@ -443,8 +443,256 @@ except Exception:
     log.exception('Unable to register Remote UI enhancement blueprint')
 
 
-# Attach Simplified Youth Mode & Theme Switcher to MainWindow once startup finishes
+# Attach Simplified Youth Mode & Apple HIG Theme Switcher to MainWindow once startup finishes
 YOUTH_ALLOWED_PLUGINS = ('bibles', 'images', 'custom', 'songs')
+
+APPLE_DARK_QSS = """
+QMainWindow, QDialog {
+    background-color: #000000;
+    color: #F5F5F7;
+    font-family: "Segoe UI", -apple-system, sans-serif;
+}
+QMenuBar {
+    background-color: #1C1C1E;
+    color: #F5F5F7;
+    border-bottom: 1px solid #38383A;
+    padding: 2px 6px;
+}
+QMenuBar::item:selected, QMenu::item:selected {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+    border-radius: 6px;
+}
+QDockWidget {
+    color: #98989D;
+    font-weight: 600;
+}
+QDockWidget::title {
+    background-color: #1C1C1E;
+    border: 1px solid #38383A;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 7px 12px;
+    color: #F5F5F7;
+}
+QToolBar#simplified_quick_bar {
+    background-color: #1C1C1E;
+    border-bottom: 1px solid #38383A;
+    padding: 8px 14px;
+    spacing: 8px;
+}
+QToolBar#simplified_quick_bar QPushButton {
+    background-color: #2C2C2E;
+    color: #F5F5F7;
+    border: none;
+    border-radius: 15px;
+    padding: 6px 16px;
+    font-weight: 600;
+}
+QToolBar#simplified_quick_bar QPushButton:hover {
+    background-color: #3A3A3C;
+}
+QToolBar#simplified_quick_bar QPushButton:checked {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+}
+QToolBox::tab {
+    background-color: #1C1C1E;
+    color: #F5F5F7;
+    border: 1px solid #38383A;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+}
+QToolBox::tab:selected {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+    border-color: #0A84FF;
+}
+QListWidget, QTreeWidget, QTableWidget {
+    background-color: #1C1C1E;
+    color: #F5F5F7;
+    border: 1px solid #38383A;
+    border-radius: 10px;
+    padding: 4px;
+    selection-background-color: #0A84FF;
+    selection-color: #FFFFFF;
+    outline: none;
+}
+QListWidget::item, QTreeWidget::item {
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+QListWidget::item:selected, QTreeWidget::item:selected {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+}
+QLineEdit, QTextEdit, QPlainTextEdit, QComboBox {
+    background-color: #1C1C1E;
+    color: #F5F5F7;
+    border: 1px solid #38383A;
+    border-radius: 8px;
+    padding: 5px 10px;
+    selection-background-color: #0A84FF;
+    selection-color: #FFFFFF;
+}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus, QComboBox:focus {
+    border: 1.5px solid #0A84FF;
+}
+QPushButton, QToolButton {
+    background-color: #2C2C2E;
+    color: #F5F5F7;
+    border: 1px solid #38383A;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-weight: 500;
+}
+QPushButton:hover, QToolButton:hover {
+    background-color: #3A3A3C;
+}
+QPushButton:checked, QToolButton:checked {
+    background-color: #0A84FF;
+    border-color: #0A84FF;
+    color: #FFFFFF;
+}
+QScrollBar:vertical {
+    background: transparent;
+    width: 8px;
+    margin: 2px;
+}
+QScrollBar::handle:vertical {
+    background: #48484A;
+    min-height: 24px;
+    border-radius: 4px;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+"""
+
+APPLE_LIGHT_QSS = """
+QMainWindow, QDialog {
+    background-color: #F2F2F7;
+    color: #1D1D1F;
+    font-family: "Segoe UI", -apple-system, sans-serif;
+}
+QMenuBar {
+    background-color: #F9F9FB;
+    color: #1D1D1F;
+    border-bottom: 1px solid #E5E5EA;
+    padding: 2px 6px;
+}
+QMenuBar::item:selected, QMenu::item:selected {
+    background-color: #007AFF;
+    color: #FFFFFF;
+    border-radius: 6px;
+}
+QDockWidget {
+    color: #6E6E73;
+    font-weight: 600;
+}
+QDockWidget::title {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5EA;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 7px 12px;
+    color: #1D1D1F;
+}
+QToolBar#simplified_quick_bar {
+    background-color: #F9F9FB;
+    border-bottom: 1px solid #E5E5EA;
+    padding: 8px 14px;
+    spacing: 8px;
+}
+QToolBar#simplified_quick_bar QPushButton {
+    background-color: #E5E5EA;
+    color: #1D1D1F;
+    border: none;
+    border-radius: 15px;
+    padding: 6px 16px;
+    font-weight: 600;
+}
+QToolBar#simplified_quick_bar QPushButton:hover {
+    background-color: #D1D1D6;
+}
+QToolBar#simplified_quick_bar QPushButton:checked {
+    background-color: #007AFF;
+    color: #FFFFFF;
+}
+QToolBox::tab {
+    background-color: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #E5E5EA;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+}
+QToolBox::tab:selected {
+    background-color: #007AFF;
+    color: #FFFFFF;
+    border-color: #007AFF;
+}
+QListWidget, QTreeWidget, QTableWidget {
+    background-color: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #E5E5EA;
+    border-radius: 10px;
+    padding: 4px;
+    selection-background-color: #007AFF;
+    selection-color: #FFFFFF;
+    outline: none;
+}
+QListWidget::item, QTreeWidget::item {
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+QListWidget::item:selected, QTreeWidget::item:selected {
+    background-color: #007AFF;
+    color: #FFFFFF;
+}
+QLineEdit, QTextEdit, QPlainTextEdit, QComboBox {
+    background-color: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #D1D1D6;
+    border-radius: 8px;
+    padding: 5px 10px;
+    selection-background-color: #007AFF;
+    selection-color: #FFFFFF;
+}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus, QComboBox:focus {
+    border: 1.5px solid #007AFF;
+}
+QPushButton, QToolButton {
+    background-color: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #D1D1D6;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-weight: 500;
+}
+QPushButton:hover, QToolButton:hover {
+    background-color: #F2F2F7;
+}
+QPushButton:checked, QToolButton:checked {
+    background-color: #007AFF;
+    border-color: #007AFF;
+    color: #FFFFFF;
+}
+QScrollBar:vertical {
+    background: transparent;
+    width: 8px;
+    margin: 2px;
+}
+QScrollBar::handle:vertical {
+    background: #C7C7CC;
+    min-height: 24px;
+    border-radius: 4px;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+"""
 
 
 def _attach_pc_toolbar():
@@ -480,6 +728,7 @@ def _attach_pc_toolbar():
                             ('custom', 'Diapos perso'), ('songs', 'Chants')]:
         btn = QtWidgets.QPushButton(p_title, toolbar)
         btn.setCheckable(True)
+        btn.setCursor(QtCore.Qt.PointingHandCursor)
         btn.setMinimumHeight(30)
         btn.clicked.connect(lambda checked, p=p_name: focus_tab(p))
         toolbar.addWidget(btn)
@@ -491,6 +740,7 @@ def _attach_pc_toolbar():
 
     simple_btn = QtWidgets.QPushButton('Mode Simplifié (Jeunes) : Désactivé', toolbar)
     simple_btn.setCheckable(True)
+    simple_btn.setCursor(QtCore.Qt.PointingHandCursor)
     simple_btn.setMinimumHeight(30)
 
     def toggle_simple():
@@ -513,27 +763,43 @@ def _attach_pc_toolbar():
     toolbar.addWidget(simple_btn)
 
     theme_state = {'dark': False}
-    theme_btn = QtWidgets.QPushButton('Thème : Noir / Blanc', toolbar)
+    theme_btn = QtWidgets.QPushButton('Thème : Clair (Apple)', toolbar)
+    theme_btn.setCursor(QtCore.Qt.PointingHandCursor)
     theme_btn.setMinimumHeight(30)
 
-    def toggle_theme():
+    def apply_apple_theme(is_dark):
         app = QtWidgets.QApplication.instance()
         if not app:
             return
+        try:
+            from openlp.core.ui.style import set_default_darkmode, set_default_lightmode
+            if is_dark:
+                set_default_darkmode(app)
+            else:
+                set_default_lightmode(app)
+        except Exception:
+            pass
+        qss = APPLE_DARK_QSS if is_dark else APPLE_LIGHT_QSS
+        app.setStyleSheet(qss)
+        main_window.setStyleSheet(qss)
+        if hasattr(main_window, 'media_manager_dock') and main_window.media_manager_dock:
+            main_window.media_manager_dock.setStyleSheet('')
+        theme_btn.setText('Thème : Sombre (Noir)' if is_dark else 'Thème : Clair (Blanc)')
+
+    def toggle_theme():
         theme_state['dark'] = not theme_state['dark']
-        from openlp.core.ui.style import set_default_darkmode, set_default_lightmode
-        if theme_state['dark']:
-            set_default_darkmode(app)
-            theme_btn.setText('Thème : Noir')
-        else:
-            set_default_lightmode(app)
-            theme_btn.setText('Thème : Blanc')
+        apply_apple_theme(theme_state['dark'])
 
     theme_btn.clicked.connect(toggle_theme)
     toolbar.addWidget(theme_btn)
 
     main_window.addToolBar(QtCore.Qt.TopToolBarArea, toolbar)
     main_window.simplified_mode_toolbar = toolbar
+    apply_apple_theme(False)
 
 
-QtCore.QTimer.singleShot(1500, _attach_pc_toolbar)
+try:
+    Registry().register_function('bootstrap_post_set_up', _attach_pc_toolbar)
+except Exception:
+    pass
+QtCore.QTimer.singleShot(1000, _attach_pc_toolbar)

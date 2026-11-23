@@ -1658,7 +1658,7 @@
   <script>
     const API_BASE = '/api/v2';
     let authToken = localStorage.getItem('openlp_auth_token') || '';
-    let currentColorTheme = localStorage.getItem('openlp_remote_theme') || 'light';
+    let currentColorTheme = localStorage.getItem('openlp_apple_theme') || 'light';
     let slidesListMode = 'live'; // 'live' or 'preview'
     let liveItemData = {};
     let previewItemData = {};
@@ -1724,7 +1724,7 @@
     function applyColorTheme(theme) {
       currentColorTheme = theme === 'dark' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', currentColorTheme);
-      localStorage.setItem('openlp_remote_theme', currentColorTheme);
+      localStorage.setItem('openlp_apple_theme', currentColorTheme);
       const isDark = currentColorTheme === 'dark';
       document.getElementById('icon-sun').classList.toggle('hidden', !isDark);
       document.getElementById('icon-moon').classList.toggle('hidden', isDark);
