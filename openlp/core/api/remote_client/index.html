@@ -19,165 +19,239 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>. #
 ##########################################################################
 -->
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>OpenLP Remote</title>
   <style>
-    :root, [data-theme="dark"] {
-      --bg: #0f1115;
-      --surface: #161920;
-      --elevated: #1e222b;
-      --border: #2a2f3a;
-      --text: #f3f4f6;
-      --muted: #9ca3af;
-      --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-fg: #ffffff;
-      --danger: #ef4444;
-      --danger-bg: rgba(239, 68, 68, 0.12);
-      --danger-border: rgba(239, 68, 68, 0.3);
-      --warning: #f59e0b;
-      --success: #10b981;
-      --monitor-bg: #090a0d;
+    /* =====================================================================
+       1. APPLE HUMAN INTERFACE GUIDELINES (iOS 18 / macOS Sequoia) TOKENS
+       ===================================================================== */
+    :root {
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+
+      /* Concentric Apple Geometry */
+      --r-xs: 7px;
+      --r-sm: 10px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-xl: 26px;
+      --r-pill: 999px;
+
+      /* Motion Curves & Timings */
+      --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
+      --ease-spring: cubic-bezier(0.25, 1.25, 0.5, 1);
+      --dur-fast: 150ms;
+      --dur-med: 260ms;
     }
 
+    :root,
     [data-theme="light"] {
-      --bg: #f8fafc;
-      --surface: #ffffff;
-      --elevated: #f1f5f9;
-      --border: #e2e8f0;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #1d4ed8;
-      --primary-hover: #1e40af;
-      --primary-fg: #ffffff;
-      --danger: #dc2626;
-      --danger-bg: rgba(220, 38, 38, 0.08);
-      --danger-border: rgba(220, 38, 38, 0.25);
-      --warning: #d97706;
-      --success: #059669;
-      --monitor-bg: #0f172a;
+      --sys-bg-grouped: #F2F2F7;
+      --sys-bg-card: #FFFFFF;
+      --sys-bg-elevated: #FFFFFF;
+      --sys-fill-tertiary: rgba(118, 118, 128, 0.13);
+      --sys-fill-quaternary: rgba(116, 116, 128, 0.08);
+      --sys-text-primary: #000000;
+      --sys-text-secondary: rgba(60, 60, 67, 0.60);
+      --sys-text-tertiary: rgba(60, 60, 67, 0.30);
+      --sys-separator: rgba(60, 60, 67, 0.18);
+
+      --sys-blue: #007AFF;
+      --sys-blue-tint: rgba(0, 122, 255, 0.12);
+      --sys-green: #34C759;
+      --sys-red: #FF3B30;
+      --sys-red-tint: rgba(255, 59, 48, 0.12);
+      --sys-orange: #FF9500;
+
+      /* Liquid Glass Material Tokens (Layer 3, 4, 5) */
+      --glass-chrome: rgba(249, 249, 251, 0.78);
+      --glass-dock: rgba(255, 255, 255, 0.74);
+      --glass-popover: rgba(250, 250, 252, 0.88);
+      --glass-sidebar: rgba(242, 242, 247, 0.84);
+      --glass-solid: #FFFFFF;
+      --glass-border: rgba(0, 0, 0, 0.07);
+      --glass-specular: inset 0 0.5px 0 0 rgba(255, 255, 255, 0.92), inset 0 0 0 0.5px rgba(255, 255, 255, 0.55);
+
+      --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.03);
+      --shadow-seg: 0 3px 8px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.04);
+      --shadow-dock: 0 10px 30px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.05);
+      --shadow-popover: 0 20px 50px rgba(0, 0, 0, 0.18), 0 4px 12px rgba(0, 0, 0, 0.06);
+      --scrim: rgba(0, 0, 0, 0.20);
     }
 
-    * {
+    [data-theme="dark"] {
+      --sys-bg-grouped: #000000;
+      --sys-bg-card: #1C1C1E;
+      --sys-bg-elevated: #2C2C2E;
+      --sys-fill-tertiary: rgba(118, 118, 128, 0.26);
+      --sys-fill-quaternary: rgba(116, 116, 128, 0.18);
+      --sys-text-primary: #FFFFFF;
+      --sys-text-secondary: rgba(235, 235, 245, 0.60);
+      --sys-text-tertiary: rgba(235, 235, 245, 0.30);
+      --sys-separator: rgba(84, 84, 88, 0.48);
+
+      --sys-blue: #0A84FF;
+      --sys-blue-tint: rgba(10, 132, 255, 0.18);
+      --sys-green: #30D158;
+      --sys-red: #FF453A;
+      --sys-red-tint: rgba(255, 69, 58, 0.18);
+      --sys-orange: #FF9F0A;
+
+      --glass-chrome: rgba(28, 28, 30, 0.76);
+      --glass-dock: rgba(38, 38, 42, 0.74);
+      --glass-popover: rgba(44, 44, 46, 0.86);
+      --glass-sidebar: rgba(28, 28, 30, 0.80);
+      --glass-solid: #1C1C1E;
+      --glass-border: rgba(255, 255, 255, 0.10);
+      --glass-specular: inset 0 0.5px 0 0 rgba(255, 255, 255, 0.24), inset 0 0 0 0.5px rgba(255, 255, 255, 0.10);
+
+      --shadow-card: none;
+      --shadow-seg: 0 3px 8px rgba(0, 0, 0, 0.36);
+      --shadow-dock: 0 12px 34px rgba(0, 0, 0, 0.55);
+      --shadow-popover: 0 24px 60px rgba(0, 0, 0, 0.70);
+      --scrim: rgba(0, 0, 0, 0.50);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+
+    /* =====================================================================
+       2. BASE RESET & ACCESSIBILITY
+       ===================================================================== */
+    *,
+    *::before,
+    *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
-      height: 100%;
+    html,
+    body {
+      min-height: 100%;
       width: 100%;
-      overflow: hidden;
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
-      font-size: 14px;
+      overflow-x: hidden;
+      background-color: var(--sys-bg-grouped);
+      color: var(--sys-text-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
       line-height: 1.45;
+      letter-spacing: -0.011em;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color var(--dur-med) var(--ease-apple),
+                  color var(--dur-med) var(--ease-apple);
     }
 
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+      color: inherit;
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid var(--sys-blue);
+      outline-offset: 2px;
+    }
+
+    svg {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* =====================================================================
+       3. APP SHELL (iOS 18 MOBILE DEFAULT -> macOS SEQUOIA >= 900px)
+       ===================================================================== */
     .app-shell {
+      min-height: 100vh;
+      width: 100%;
       display: flex;
       flex-direction: column;
-      height: 100%;
-      max-width: 768px;
-      margin: 0 auto;
-      background-color: var(--bg);
-      border-left: 1px solid var(--border);
-      border-right: 1px solid var(--border);
       position: relative;
     }
 
-    /* Header */
-    .app-header {
-      height: 54px;
-      padding: 0 14px;
-      background-color: var(--surface);
-      border-bottom: 1px solid var(--border);
+    .mac-sidebar {
+      display: none;
+    }
+
+    .mac-toolbar {
+      display: none;
+    }
+
+    .mac-transport-card {
+      display: none;
+    }
+
+    /* =====================================================================
+       4. iOS 18 TOP NAVIGATION BAR + PILL SEGMENTED BAR (LIQUID GLASS)
+       ===================================================================== */
+    .ios-navbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--glass-chrome);
+      border-bottom: 0.5px solid var(--glass-border);
+      border-radius: 0 0 var(--r-xl) var(--r-xl);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+      -webkit-backdrop-filter: blur(24px) saturate(190%);
+      backdrop-filter: blur(24px) saturate(190%);
+      padding: 10px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ios-nav-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      flex-shrink: 0;
-      z-index: 20;
+      gap: 10px;
     }
 
-    .header-left {
+    .ios-title-group {
       display: flex;
       align-items: center;
       gap: 10px;
       min-width: 0;
     }
 
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+    .ios-app-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.022em;
     }
 
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--bg);
-      color: var(--text);
+    .ios-status-pill {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 120ms ease;
-    }
-
-    .icon-btn:hover {
-      background-color: var(--elevated);
-    }
-
-    .header-title {
-      font-size: 14px;
-      font-weight: 600;
-      line-height: 1.2;
-    }
-
-    .header-subtitle {
-      font-size: 11px;
-      color: var(--muted);
+      gap: 6px;
+      padding: 3.5px 10px;
+      border-radius: var(--r-pill);
+      background: var(--sys-fill-tertiary);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--sys-text-secondary);
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 180px;
-    }
-
-    .theme-toggle-btn {
-      height: 32px;
-      padding: 0 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--bg);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      background-color: var(--danger-bg);
-      border: 1px solid var(--danger-border);
-      color: var(--danger);
-      font-size: 12px;
-      font-weight: 500;
     }
 
     .dot {
@@ -185,103 +259,141 @@
       height: 7px;
       border-radius: 50%;
       display: inline-block;
-    }
-    .dot-live { background-color: var(--danger); }
-    .dot-preview { background-color: var(--warning); }
-    .dot-ok { background-color: var(--success); }
-
-    /* Drawer / Sidenav */
-    .drawer-backdrop {
-      position: absolute;
-      inset: 0;
-      background-color: rgba(0, 0, 0, 0.55);
-      z-index: 30;
+      flex-shrink: 0;
     }
 
-    .side-drawer {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      width: 260px;
-      background-color: var(--surface);
-      border-right: 1px solid var(--border);
-      z-index: 40;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    .dot-ok {
+      background-color: var(--sys-green);
+      box-shadow: 0 0 6px var(--sys-green);
     }
 
-    .drawer-header {
-      height: 54px;
-      padding: 0 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
+    .dot-live {
+      background-color: var(--sys-red);
+    }
+
+    .dot-preview {
+      background-color: var(--sys-orange);
+    }
+
+    .ios-icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--sys-fill-tertiary);
+      color: var(--sys-blue);
+      display: inline-flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      transition: transform var(--dur-fast) var(--ease-apple),
+                  background-color var(--dur-fast);
     }
 
-    .drawer-nav {
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    .ios-icon-btn:active {
+      transform: scale(0.90);
     }
 
-    .nav-btn {
-      width: 100%;
-      height: 42px;
-      padding: 0 12px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: var(--text);
+    /* Pill-shaped Segmented Control (border-radius: 999px) */
+    .ios-seg {
+      position: relative;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      background: var(--sys-fill-tertiary);
+      border-radius: var(--r-pill);
+      padding: 3.5px;
+      box-shadow: var(--glass-specular);
+    }
+
+    .ios-seg-sm {
+      display: inline-grid;
+      border-radius: var(--r-pill);
+      padding: 2.5px;
+    }
+
+    .ios-seg-thumb {
+      position: absolute;
+      top: 3.5px;
+      bottom: 3.5px;
+      left: 0;
+      border-radius: var(--r-pill);
+      background: var(--sys-bg-elevated);
+      box-shadow: var(--shadow-seg);
+      pointer-events: none;
+      transition: transform var(--dur-med) var(--ease-spring),
+                  width var(--dur-med) var(--ease-spring);
+    }
+
+    .ios-seg-sm .ios-seg-thumb {
+      top: 2.5px;
+      bottom: 2.5px;
+      border-radius: var(--r-pill);
+    }
+
+    .ios-seg-btn {
+      position: relative;
+      z-index: 1;
+      height: 32px;
+      padding: 0 6px;
+      border-radius: var(--r-pill);
       font-size: 13px;
       font-weight: 500;
-      display: flex;
+      color: var(--sys-text-primary);
+      opacity: 0.72;
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      text-align: left;
-      transition: background-color 120ms ease;
+      justify-content: center;
+      white-space: nowrap;
+      transition: opacity var(--dur-fast) var(--ease-apple);
     }
 
-    .nav-btn:hover {
-      background-color: var(--elevated);
-    }
-
-    .nav-btn[aria-current="page"] {
-      background-color: var(--primary);
-      color: var(--primary-fg);
-      font-weight: 600;
-    }
-
-    .drawer-footer {
-      padding: 14px 16px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .ios-seg-sm .ios-seg-btn {
+      height: 26px;
+      padding: 0 12px;
       font-size: 12px;
-      color: var(--muted);
     }
 
-    /* Main Content & Monitors */
-    .app-main {
+    .ios-seg-btn[aria-current="page"],
+    .ios-seg-btn[aria-selected="true"],
+    .ios-seg-btn[aria-checked="true"],
+    .ios-seg-btn.is-active {
+      font-weight: 600;
+      opacity: 1;
+    }
+
+    /* =====================================================================
+       5. WORKSPACE CONTENT & DUAL MONITORS CARD
+       ===================================================================== */
+    .workspace-body {
       flex: 1;
-      overflow-y: auto;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 16px 16px 108px;
       display: flex;
       flex-direction: column;
+      gap: 20px;
     }
 
-    .monitors-bar {
-      padding: 12px 14px;
-      background-color: var(--elevated);
-      border-bottom: 1px solid var(--border);
+    .stage-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .ios-card {
+      background: var(--sys-bg-card);
+      border-radius: var(--r-md);
+      box-shadow: var(--shadow-card);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .monitors-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      flex-shrink: 0;
+      gap: 12px;
     }
 
     .monitor-col {
@@ -296,27 +408,45 @@
       align-items: center;
       justify-content: space-between;
       gap: 4px;
-      height: 24px;
+      min-height: 22px;
+      padding: 0 2px;
     }
 
-    .monitor-label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .monitor-tag {
       font-size: 11px;
       font-weight: 600;
       text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--sys-text-secondary);
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
       letter-spacing: 0.04em;
-      color: var(--muted);
+      color: var(--sys-red);
+      background: var(--sys-red-tint);
+      padding: 2px 7px;
+      border-radius: var(--r-pill);
+    }
+
+    .live-counter {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--sys-text-secondary);
+      font-variant-numeric: tabular-nums;
     }
 
     .monitor-screen {
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--monitor-bg);
-      color: #f8fafc;
+      border-radius: var(--r-sm);
+      background: linear-gradient(145deg, #161618 0%, #050506 100%);
+      color: #FFFFFF;
       padding: 10px;
       display: flex;
       flex-direction: column;
@@ -325,6 +455,11 @@
       text-align: center;
       overflow: hidden;
       position: relative;
+      box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.15);
+    }
+
+    .monitor-screen.is-live-screen {
+      box-shadow: 0 0 0 1.5px var(--sys-red), inset 0 0 0 0.5px rgba(255, 255, 255, 0.15);
     }
 
     .monitor-screen img {
@@ -334,7 +469,8 @@
     }
 
     .monitor-text {
-      font-size: 11px;
+      font-size: 11.5px;
+      font-weight: 500;
       line-height: 1.35;
       display: -webkit-box;
       -webkit-line-clamp: 4;
@@ -344,20 +480,123 @@
     }
 
     .monitor-caption {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--muted);
+      font-size: 11.5px;
+      color: var(--sys-text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    /* Sections */
-    .section-pane {
-      padding: 14px;
+    .monitors-footer {
+      padding-top: 10px;
+      border-top: 0.5px solid var(--sys-separator);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .monitors-meta {
+      min-width: 0;
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+    }
+
+    .monitors-meta-label {
+      font-size: 11px;
+      color: var(--sys-text-secondary);
+    }
+
+    .monitors-meta-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--sys-text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* =====================================================================
+       6. BUTTONS (CAPSULE PRIMARY, TINTED & SYSTEM FILLS)
+       ===================================================================== */
+    .btn {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--r-pill);
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--sys-fill-tertiary);
+      color: var(--sys-text-primary);
+      white-space: nowrap;
+      transition: transform var(--dur-fast) var(--ease-apple),
+                  opacity var(--dur-fast),
+                  background-color var(--dur-fast);
+    }
+
+    .btn:active {
+      transform: scale(0.95);
+    }
+
+    .btn-sm {
+      height: 30px;
+      padding: 0 11px;
+      font-size: 12px;
+    }
+
+    .btn-xs {
+      height: 28px;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+
+    .btn-primary {
+      background: var(--sys-blue);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .btn-tinted {
+      background: var(--sys-blue-tint);
+      color: var(--sys-blue);
+      font-weight: 600;
+    }
+
+    .btn-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--sys-blue);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 6px;
+      border-radius: var(--r-xs);
+      transition: opacity var(--dur-fast), transform var(--dur-fast);
+    }
+
+    .btn-text:active {
+      opacity: 0.7;
+      transform: scale(0.96);
+    }
+
+    /* =====================================================================
+       7. SECTIONS & INSET GROUPED LISTS (0.5px INDENTED SEPARATORS)
+       ===================================================================== */
+    .sections-col {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .section-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
 
     .section-header {
@@ -365,38 +604,110 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+      padding: 0 12px;
+      margin-bottom: 6px;
     }
 
     .section-title {
       font-size: 12px;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--muted);
+      letter-spacing: 0.03em;
+      color: var(--sys-text-secondary);
     }
 
     .list-box {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background-color: var(--surface);
+      background: var(--sys-bg-card);
+      border-radius: var(--r-md);
+      box-shadow: var(--shadow-card);
       overflow: hidden;
     }
 
     .list-row {
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
+      position: relative;
+      min-height: 52px;
+      padding: 10px 14px 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      transition: background-color var(--dur-fast);
     }
 
-    .list-row:last-child {
-      border-bottom: none;
+    .list-row:hover {
+      background: var(--sys-fill-quaternary);
+    }
+
+    .list-row:active {
+      background: var(--sys-fill-tertiary);
+    }
+
+    .list-row:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 16px;
+      right: 0;
+      bottom: 0;
+      height: 0.5px;
+      background: var(--sys-separator);
+    }
+
+    .list-row.with-icon:not(:last-child)::after {
+      left: 56px;
     }
 
     .list-row.is-active {
-      background-color: var(--elevated);
+      background: var(--sys-blue-tint);
+    }
+
+    .list-row.is-active .row-title {
+      color: var(--sys-blue);
+      font-weight: 600;
+    }
+
+    .list-row.is-active .row-icon {
+      background: var(--sys-blue);
+      color: #FFFFFF;
+    }
+
+    .list-row.is-active .slide-badge {
+      background: var(--sys-blue);
+      color: #FFFFFF;
+    }
+
+    .row-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .row-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--sys-fill-tertiary);
+      color: var(--sys-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .slide-badge {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--sys-text-secondary);
+      background: var(--sys-fill-tertiary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
     }
 
     .row-info {
@@ -405,17 +716,18 @@
     }
 
     .row-title {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--sys-text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .row-sub {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 2px;
+      font-size: 12px;
+      color: var(--sys-text-secondary);
+      margin-top: 1px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -428,126 +740,126 @@
       flex-shrink: 0;
     }
 
-    /* Buttons */
-    .btn {
-      height: 34px;
-      padding: 0 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background-color: var(--surface);
-      color: var(--text);
-      transition: opacity 120ms ease, background-color 120ms ease;
-    }
-
-    .btn:hover {
-      background-color: var(--elevated);
-    }
-
-    .btn-sm {
-      height: 28px;
-      padding: 0 10px;
-      font-size: 12px;
-    }
-
-    .btn-xs {
-      height: 24px;
-      padding: 0 8px;
-      font-size: 11px;
-    }
-
-    .btn-primary {
-      background-color: var(--primary);
-      border-color: var(--primary);
-      color: var(--primary-fg);
-    }
-
-    .btn-primary:hover {
-      background-color: var(--primary-hover);
-    }
-
-    /* Forms & Inputs */
-    .form-grid-3 {
-      display: grid;
-      grid-template-columns: 1.4fr 0.8fr 0.8fr;
-      gap: 8px;
-    }
-
-    .form-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .form-group {
+    /* =====================================================================
+       8. INSET GROUPED FORMS & INPUTS (BIBLE & CUSTOM SLIDES)
+       ===================================================================== */
+    .ios-field-row {
+      position: relative;
+      min-height: 46px;
+      padding: 8px 14px;
       display: flex;
-      flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .ios-field-row:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 14px;
+      right: 0;
+      bottom: 0;
+      height: 0.5px;
+      background: var(--sys-separator);
     }
 
     .form-label {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 500;
-      color: var(--muted);
+      color: var(--sys-text-primary);
+      flex-shrink: 0;
     }
 
-    .form-input, .form-select, .form-textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--surface);
-      color: var(--text);
-      font-size: 13px;
-      font-family: inherit;
+    .form-input,
+    .form-select {
+      background: transparent;
+      border: none;
+      color: var(--sys-blue);
+      font-size: 14px;
+      font-weight: 500;
+      text-align: right;
+      min-width: 0;
+      flex: 1;
+      height: 34px;
     }
 
-    .form-input, .form-select {
-      height: 36px;
+    .form-input::placeholder {
+      color: var(--sys-text-tertiary);
+    }
+
+    .search-bar-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      height: 38px;
+      padding: 0 14px;
+      border-radius: var(--r-pill);
+      border: none;
+      background: var(--sys-bg-card);
+      box-shadow: var(--shadow-card);
+      color: var(--sys-text-primary);
+      font-size: 13.5px;
     }
 
     .form-textarea {
+      width: 100%;
+      min-height: 92px;
+      padding: 12px 14px;
+      border: none;
+      background: transparent;
+      color: var(--sys-text-primary);
+      font-size: 14px;
+      line-height: 1.45;
       resize: vertical;
-      min-height: 80px;
     }
 
-    /* Themes Grid */
+    .action-trio {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    /* =====================================================================
+       9. THEMES GRID
+       ===================================================================== */
     .themes-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
 
     .theme-item {
       padding: 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--surface);
-      cursor: pointer;
+      border-radius: var(--r-md);
+      background: var(--sys-bg-card);
+      box-shadow: var(--shadow-card);
       text-align: left;
       display: flex;
       flex-direction: column;
       gap: 8px;
-      color: var(--text);
+      color: var(--sys-text-primary);
+      transition: transform var(--dur-fast) var(--ease-apple),
+                  box-shadow var(--dur-fast);
+    }
+
+    .theme-item:active {
+      transform: scale(0.97);
     }
 
     .theme-item[aria-selected="true"] {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 1px var(--primary);
+      box-shadow: 0 0 0 2px var(--sys-blue), var(--shadow-card);
     }
 
     .theme-thumb {
       width: 100%;
       aspect-ratio: 16 / 9;
-      border-radius: 6px;
-      background-color: var(--monitor-bg);
-      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      background: linear-gradient(145deg, #161618 0%, #050506 100%);
+      color: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -560,456 +872,785 @@
       object-fit: cover;
     }
 
-    /* Bottom Display Sheet */
-    .display-sheet {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 58px;
-      background-color: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 12px 14px;
+    /* =====================================================================
+       10. LAYER 3: FLOATING CAPSULE LIQUID GLASS DOCK
+       ===================================================================== */
+    .ios-dock-wrap {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
       z-index: 25;
-      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
     }
 
-    .display-grid {
+    .ios-dock {
+      max-width: 500px;
+      margin: 0 auto;
+      height: 56px;
+      padding: 6px;
+      border-radius: var(--r-pill);
+      background: var(--glass-dock);
+      box-shadow: var(--glass-specular), var(--shadow-dock);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      backdrop-filter: blur(28px) saturate(200%);
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .display-opt {
-      padding: 10px 6px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--bg);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 500;
-      display: flex;
-      flex-direction: column;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 6px;
       align-items: center;
-      gap: 6px;
-      cursor: pointer;
+      pointer-events: auto;
     }
 
-    .display-opt[aria-checked="true"] {
-      background-color: var(--primary);
-      border-color: var(--primary);
-      color: var(--primary-fg);
-    }
-
-    /* Footer: 5 Original OpenLP Buttons */
-    .app-footer {
-      height: 58px;
-      padding: 6px 10px;
-      background-color: var(--surface);
-      border-top: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
-      flex-shrink: 0;
-      z-index: 20;
-    }
-
-    .footer-btn {
+    .ios-stepper {
       height: 44px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background-color: var(--bg);
-      color: var(--text);
-      font-size: 11px;
-      font-weight: 500;
-      display: flex;
-      flex-direction: column;
+      border-radius: var(--r-pill);
+      background: var(--sys-fill-tertiary);
+      display: grid;
+      grid-template-columns: 34px 1fr 34px;
+      align-items: center;
+      padding: 0 3px;
+    }
+
+    .ios-step-btn {
+      width: 32px;
+      height: 36px;
+      border-radius: var(--r-pill);
+      color: var(--sys-text-primary);
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 2px;
-      cursor: pointer;
+      transition: transform var(--dur-fast), background-color var(--dur-fast);
     }
 
-    .footer-btn:active {
-      opacity: 0.8;
+    .ios-step-btn:active {
+      background: var(--sys-fill-tertiary);
+      transform: scale(0.88);
     }
 
-    .footer-btn-primary {
-      background-color: var(--primary);
-      border-color: var(--primary);
-      color: var(--primary-fg);
+    .ios-step-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      text-align: center;
+      color: var(--sys-text-secondary);
+      user-select: none;
     }
 
-    .hidden {
-      display: none !important;
+    .ios-dock-action {
+      height: 44px;
+      padding: 0 15px;
+      border-radius: var(--r-pill);
+      background: var(--sys-fill-tertiary);
+      color: var(--sys-text-primary);
+      font-size: 12.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--dur-fast) var(--ease-apple);
+    }
+
+    .ios-dock-action[aria-expanded="true"] {
+      background: var(--sys-blue);
+      color: #FFFFFF;
+    }
+
+    .ios-dock-action:active {
+      transform: scale(0.95);
+    }
+
+    /* =====================================================================
+       11. LAYER 4: LIQUID GLASS POPOVER (SORTIE DU PROJECTEUR) & LAYER 5 TOAST
+       ===================================================================== */
+    .popover-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      background: var(--scrim);
+      opacity: 1;
+      transition: opacity var(--dur-med) var(--ease-apple);
+    }
+
+    .display-sheet {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 80px;
+      max-width: 500px;
+      margin: 0 auto;
+      z-index: 35;
+      padding: 16px;
+      border-radius: var(--r-xl);
+      background: var(--glass-popover);
+      box-shadow: var(--glass-specular), var(--shadow-popover);
+      -webkit-backdrop-filter: blur(36px) saturate(210%);
+      backdrop-filter: blur(36px) saturate(210%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transform-origin: bottom right;
+      transition: transform var(--dur-med) var(--ease-spring),
+                  opacity var(--dur-med) var(--ease-apple);
+    }
+
+    .display-sheet.hidden {
+      display: flex !important;
+      opacity: 0;
+      transform: scale(0.92) translateY(10px);
+      pointer-events: none;
+    }
+
+    .popover-scrim.hidden {
+      display: block !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pop-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pop-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .close-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--sys-fill-tertiary);
+      color: var(--sys-text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pop-hint {
+      font-size: 12px;
+      color: var(--sys-text-secondary);
+      line-height: 1.4;
     }
 
     .toast-bar {
-      position: absolute;
-      bottom: 68px;
-      left: 16px;
-      right: 16px;
-      padding: 10px 14px;
-      border-radius: 8px;
-      background-color: var(--surface);
-      border: 1px solid var(--primary);
-      color: var(--text);
-      font-size: 12px;
-      font-weight: 500;
+      position: fixed;
+      left: 50%;
+      bottom: 82px;
+      transform: translateX(-50%);
       z-index: 50;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      padding: 8px 18px;
+      border-radius: var(--r-pill);
+      background: var(--glass-popover);
+      color: var(--sys-text-primary);
+      box-shadow: var(--glass-specular), var(--shadow-dock);
+      -webkit-backdrop-filter: blur(24px) saturate(190%);
+      backdrop-filter: blur(24px) saturate(190%);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      max-width: calc(100vw - 32px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity var(--dur-fast), transform var(--dur-fast) var(--ease-spring);
+    }
+
+    .toast-bar.hidden {
+      display: block !important;
+      opacity: 0;
+      transform: translate(-50%, 8px) scale(0.94);
+      pointer-events: none;
+    }
+
+    /* Fallbacks for reduced transparency or missing backdrop-filter */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .ios-navbar,
+      .ios-dock,
+      .display-sheet,
+      .toast-bar,
+      .mac-sidebar,
+      .mac-toolbar {
+        background: var(--glass-solid);
+      }
+    }
+
+    @media (prefers-reduced-transparency: reduce) {
+      .ios-navbar,
+      .ios-dock,
+      .display-sheet,
+      .toast-bar,
+      .mac-sidebar,
+      .mac-toolbar {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+        background: var(--glass-solid) !important;
+      }
+    }
+
+    /* =====================================================================
+       12. DESKTOP / macOS SEQUOIA ARCHITECTURE (>= 900px)
+       ===================================================================== */
+    @media (min-width: 900px) {
+      .app-shell {
+        display: grid;
+        grid-template-columns: 235px 1fr;
+        min-height: 100vh;
+      }
+
+      .ios-navbar {
+        display: none;
+      }
+
+      .ios-dock-wrap {
+        display: none;
+      }
+
+      .mac-sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        background: var(--glass-sidebar);
+        border-right: 0.5px solid var(--sys-separator);
+        -webkit-backdrop-filter: blur(24px) saturate(180%);
+        backdrop-filter: blur(24px) saturate(180%);
+        padding: 18px 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .mac-brand {
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        padding: 0 10px 16px;
+      }
+
+      .mac-nav-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--sys-text-secondary);
+        padding: 0 10px 6px;
+      }
+
+      .mac-nav-list {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .mac-nav-item {
+        width: 100%;
+        height: 36px;
+        padding: 0 10px;
+        border-radius: 9px;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--sys-text-primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background-color var(--dur-fast);
+      }
+
+      .mac-nav-item:hover {
+        background: var(--sys-fill-quaternary);
+      }
+
+      .mac-nav-item svg {
+        color: var(--sys-blue);
+      }
+
+      .mac-nav-item[aria-current="page"] {
+        background: var(--sys-blue);
+        color: #FFFFFF;
+        font-weight: 600;
+      }
+
+      .mac-nav-item[aria-current="page"] svg {
+        color: #FFFFFF;
+      }
+
+      .mac-main-pane {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .mac-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        height: 54px;
+        padding: 0 24px;
+        background: var(--glass-chrome);
+        border-bottom: 0.5px solid var(--sys-separator);
+        -webkit-backdrop-filter: blur(24px) saturate(190%);
+        backdrop-filter: blur(24px) saturate(190%);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .mac-toolbar-left {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .mac-toolbar-title {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .mac-toolbar-sub {
+        font-size: 12px;
+        color: var(--sys-text-secondary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mac-toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .workspace-body {
+        max-width: 1180px;
+        padding: 24px;
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .stage-col {
+        position: sticky;
+        top: 78px;
+      }
+
+      .mac-transport-card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .themes-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .toast-bar {
+        bottom: 24px;
+      }
+    }
+
+    /* Hidden utility MUST stay last to override display: flex / grid */
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 <body>
   <div class="app-shell">
 
-    <!-- ==================== HEADER ==================== -->
-    <header class="app-header">
-      <div class="header-left">
-        <button type="button" class="icon-btn" onclick="toggleDrawer()" aria-label="Menu">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-        </button>
-        <div>
-          <div id="header-section-title" class="header-title">Services</div>
-          <div id="active-theme-indicator" class="header-subtitle">Thème : Chargement...</div>
-        </div>
-      </div>
-
-      <div class="header-right">
-        <button type="button" class="theme-toggle-btn" onclick="toggleColorTheme()" title="Basculer entre thème Noir et Blanc">
-          <svg id="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-          <svg id="icon-moon" class="hidden" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-          <span id="theme-toggle-label">Clair</span>
-        </button>
-
-        <div class="status-badge">
-          <span class="dot dot-live"></span>
-          <span id="live-status-text">Présentation</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- ==================== COLLAPSIBLE LEFT DRAWER ==================== -->
-    <div id="drawer-backdrop" class="drawer-backdrop hidden" onclick="toggleDrawer(false)"></div>
-    <aside id="side-drawer" class="side-drawer hidden">
+    <!-- ==================== macOS SEQUOIA SIDEBAR (DESKTOP >= 900px) ==================== -->
+    <aside class="mac-sidebar" aria-label="Barre latérale macOS">
       <div>
-        <div class="drawer-header">
-          <div style="display:flex;align-items:center;gap:8px;font-weight:600;">
-            <span id="conn-dot" class="dot dot-ok"></span>
-            <span>OpenLP Remote</span>
-          </div>
-          <button type="button" class="icon-btn" onclick="toggleDrawer(false)" aria-label="Fermer">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        <div class="mac-brand">OpenLP Remote</div>
+        <div class="mac-nav-label">Bibliothèque</div>
+        <nav class="mac-nav-list" aria-label="Navigation principale Bureau">
+          <button type="button" class="mac-nav-item" id="mac-nav-services" aria-current="page" onclick="switchSection('services')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+            <span>Ordre du service</span>
           </button>
-        </div>
-
-        <nav class="drawer-nav" aria-label="Navigation principale">
-          <button type="button" class="nav-btn" id="nav-services" aria-current="page" onclick="switchSection('services')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
-            <span>Services</span>
-          </button>
-
-          <button type="button" class="nav-btn" id="nav-images" aria-current="false" onclick="switchSection('images')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-            <span>Images</span>
-          </button>
-
-          <button type="button" class="nav-btn" id="nav-bible" aria-current="false" onclick="switchSection('bible')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+          <button type="button" class="mac-nav-item" id="mac-nav-bible" aria-current="false" onclick="switchSection('bible')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
             <span>Bible</span>
           </button>
-
-          <button type="button" class="nav-btn" id="nav-themes" aria-current="false" onclick="switchSection('themes')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-            <span>Thèmes</span>
+          <button type="button" class="mac-nav-item" id="mac-nav-images" aria-current="false" onclick="switchSection('images')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            <span>Images &amp; Galerie</span>
           </button>
-
-          <button type="button" class="nav-btn" id="nav-custom" aria-current="false" onclick="switchSection('custom')">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+          <button type="button" class="mac-nav-item" id="mac-nav-custom" aria-current="false" onclick="switchSection('custom')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
             <span>Diapos perso</span>
+          </button>
+          <button type="button" class="mac-nav-item" id="mac-nav-themes" aria-current="false" onclick="switchSection('themes')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            <span>Thèmes de salle</span>
           </button>
         </nav>
       </div>
 
-      <div class="drawer-footer">
-        <span id="conn-label">Connecté à OpenLP</span>
-        <button type="button" class="btn btn-xs" onclick="toggleColorTheme()">Noir / Blanc</button>
+      <div class="ios-status-pill" style="align-self:flex-start;">
+        <span class="dot dot-ok"></span>
+        <span>Serveur OpenLP connecté</span>
       </div>
     </aside>
 
-    <!-- ==================== MAIN CONTENT ==================== -->
-    <main class="app-main">
+    <!-- ==================== MAIN PANE ==================== -->
+    <div class="mac-main-pane">
 
-      <!-- DUAL MONITORS: PREVIEW (BEFORE LIVE) & LIVE (PROJECTOR) -->
-      <div class="monitors-bar">
-        <!-- Preview Monitor -->
-        <div class="monitor-col">
-          <div class="monitor-header">
-            <div class="monitor-label">
-              <span class="dot dot-preview"></span>
-              <span>Prévisualisation</span>
+      <!-- A. iOS 18 TOP NAVIGATION BAR + PILL SEGMENTED BAR (MOBILE / TABLET) -->
+      <header class="ios-navbar">
+        <div class="ios-nav-row">
+          <div class="ios-title-group">
+            <span class="ios-app-title">OpenLP</span>
+            <span class="ios-status-pill">
+              <span id="conn-dot" class="dot dot-ok"></span>
+              <span id="conn-label">En ligne</span>
+            </span>
+          </div>
+
+          <button type="button" class="ios-icon-btn" onclick="toggleColorTheme()" title="Basculer entre thème Clair et Sombre" aria-label="Basculer le thème">
+            <svg id="icon-sun" class="hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            <span id="theme-toggle-label" class="hidden">Sombre</span>
+          </button>
+        </div>
+
+        <!-- Pill-Shaped Segmented Navigation Bar -->
+        <nav id="ios-nav-seg" class="ios-seg" aria-label="Navigation principale">
+          <span class="ios-seg-thumb" aria-hidden="true"></span>
+          <button type="button" class="ios-seg-btn is-active" id="nav-services" aria-current="page" onclick="switchSection('services')">Service</button>
+          <button type="button" class="ios-seg-btn" id="nav-bible" aria-current="false" onclick="switchSection('bible')">Bible</button>
+          <button type="button" class="ios-seg-btn" id="nav-images" aria-current="false" onclick="switchSection('images')">Images</button>
+          <button type="button" class="ios-seg-btn" id="nav-custom" aria-current="false" onclick="switchSection('custom')">Diapos</button>
+          <button type="button" class="ios-seg-btn" id="nav-themes" aria-current="false" onclick="switchSection('themes')">Thèmes</button>
+        </nav>
+      </header>
+
+      <!-- B. macOS UNIFIED TOOLBAR (DESKTOP >= 900px) -->
+      <header class="mac-toolbar">
+        <div class="mac-toolbar-left">
+          <span id="header-section-title" class="mac-toolbar-title">Services</span>
+          <span id="active-theme-indicator" class="mac-toolbar-sub">Thème : Chargement…</span>
+        </div>
+        <div class="mac-toolbar-right">
+          <div id="mac-display-seg" class="ios-seg ios-seg-sm" role="radiogroup" aria-label="Sortie projecteur">
+            <span class="ios-seg-thumb" aria-hidden="true"></span>
+            <button type="button" class="ios-seg-btn" data-disp="blank" onclick="setDisplayMode('blank')">Noir</button>
+            <button type="button" class="ios-seg-btn" data-disp="theme" onclick="setDisplayMode('theme')">Thème</button>
+            <button type="button" class="ios-seg-btn" data-disp="desktop" onclick="setDisplayMode('desktop')">Bureau</button>
+            <button type="button" class="ios-seg-btn is-active" data-disp="show" onclick="setDisplayMode('show')">Afficher</button>
+          </div>
+          <button type="button" class="ios-icon-btn" onclick="toggleColorTheme()" title="Basculer entre thème Clair et Sombre" aria-label="Basculer le thème">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- C. WORKSPACE BODY -->
+      <main class="workspace-body">
+
+        <!-- STAGE COLUMN: DUAL MONITORS + DESKTOP TRANSPORT -->
+        <div class="stage-col">
+          <div class="ios-card">
+            <div class="monitors-grid">
+              <!-- Preview Monitor -->
+              <div class="monitor-col">
+                <div class="monitor-header">
+                  <span class="monitor-tag">Aperçu</span>
+                </div>
+                <div class="monitor-screen" id="preview-monitor">
+                  <img id="preview-image-el" class="hidden" src="" alt="Aperçu" />
+                  <div id="preview-text-el" class="monitor-text">Aucun élément en aperçu</div>
+                </div>
+              </div>
+
+              <!-- Live Monitor -->
+              <div class="monitor-col">
+                <div class="monitor-header">
+                  <span class="live-badge"><span class="dot dot-live" style="width:5px;height:5px;"></span>Direct</span>
+                  <span id="live-slide-counter" class="live-counter">0 / 0</span>
+                </div>
+                <div class="monitor-screen is-live-screen" id="live-monitor">
+                  <img id="live-image-el" class="hidden" src="" alt="Direct" />
+                  <div id="live-text-el" class="monitor-text">Aucune diapositive en direct</div>
+                </div>
+                <div id="live-title" class="monitor-caption">En attente de projection</div>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary btn-xs" onclick="pushPreviewToLive()">
-              <span>Go Live</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
-          </div>
-          <div class="monitor-screen" id="preview-monitor">
-            <img id="preview-image-el" class="hidden" src="" alt="Aperçu" />
-            <div id="preview-text-el" class="monitor-text">Aucun élément en aperçu</div>
-          </div>
-          <div id="preview-title" class="monitor-caption">Sélectionnez un élément à prévisualiser</div>
-        </div>
 
-        <!-- Live Monitor -->
-        <div class="monitor-col">
-          <div class="monitor-header">
-            <div class="monitor-label">
-              <span class="dot dot-live"></span>
-              <span>En direct</span>
+            <div class="monitors-footer">
+              <div class="monitors-meta">
+                <span class="monitors-meta-label">Prêt à projeter</span>
+                <div id="preview-title" class="monitors-meta-title">Sélectionnez un élément à prévisualiser</div>
+              </div>
+              <button type="button" class="btn btn-primary" onclick="pushPreviewToLive()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Envoyer</span>
+              </button>
             </div>
-            <span id="live-slide-counter" style="font-size:11px;color:var(--muted);font-family:monospace;">0 / 0</span>
           </div>
-          <div class="monitor-screen" id="live-monitor">
-            <img id="live-image-el" class="hidden" src="" alt="Direct" />
-            <div id="live-text-el" class="monitor-text" style="font-weight:600;">Aucune diapositive en direct</div>
-          </div>
-          <div id="live-title" class="monitor-caption">En attente de projection</div>
-        </div>
-      </div>
 
-      <!-- ==================== SECTION 1: SERVICES ==================== -->
-      <section id="sec-services" class="section-pane">
-        <div class="section-header">
-          <h2 class="section-title">Éléments du service</h2>
-          <button type="button" class="btn btn-xs" onclick="refreshAll()">Actualiser</button>
-        </div>
-        <div id="service-items-list" class="list-box">
-          <div class="list-row"><span class="row-sub">Chargement du service...</span></div>
-        </div>
-
-        <div class="section-header" style="margin-top:4px;">
-          <h3 id="slides-panel-title" class="section-title">Diapositives (En direct)</h3>
-          <div style="display:flex;gap:4px;">
-            <button type="button" id="btn-view-preview-slides" class="btn btn-xs" onclick="setSlidesListMode('preview')">Diapos Aperçu</button>
-            <button type="button" id="btn-view-live-slides" class="btn btn-primary btn-xs" onclick="setSlidesListMode('live')">Diapos Direct</button>
-          </div>
-        </div>
-        <div id="active-slides-list" class="list-box">
-          <div class="list-row"><span class="row-sub">Aucune diapositive sélectionnée.</span></div>
-        </div>
-      </section>
-
-      <!-- ==================== SECTION 2: IMAGES & MOBILE GALLERY UPLOAD ==================== -->
-      <section id="sec-images" class="section-pane hidden">
-        <div class="form-group">
-          <h2 class="section-title">Importer depuis la galerie du téléphone</h2>
-          <p class="row-sub" style="white-space:normal;">
-            Choisissez une image ou affiche dans votre téléphone pour la prévisualiser ou l'envoyer directement sur le projecteur.
-          </p>
-        </div>
-
-        <label style="display:block;cursor:pointer;">
-          <input type="file" id="gallery-file-input" accept="image/*" class="hidden" onchange="handleGalleryFileSelect(event)" />
-          <div class="btn" style="width:100%;height:40px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-            <span>Choisir une image dans ma galerie</span>
-          </div>
-        </label>
-
-        <!-- Staged Upload Card -->
-        <div id="uploaded-image-card" class="list-box hidden" style="padding:12px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span id="uploaded-image-name" class="row-title">image.jpg</span>
-            <span id="upload-status-label" class="row-sub">Prête</span>
-          </div>
-          <div class="monitor-screen" style="margin-bottom:10px;">
-            <img id="uploaded-image-preview" src="" alt="Aperçu galerie" />
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-            <button type="button" class="btn btn-sm" onclick="uploadGalleryImage('preview')">Aperçu</button>
-            <button type="button" class="btn btn-sm" onclick="uploadGalleryImage('service')">+ Service</button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="uploadGalleryImage('live')">Direct</button>
+          <!-- Desktop Transport Steppers -->
+          <div class="ios-card mac-transport-card">
+            <div class="ios-stepper" style="flex:1;">
+              <button type="button" class="ios-step-btn" onclick="serviceProgress('previous')" title="Élément précédent" aria-label="Élément précédent">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <span class="ios-step-label">Élément</span>
+              <button type="button" class="ios-step-btn" onclick="serviceProgress('next')" title="Élément suivant" aria-label="Élément suivant">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+            <div class="ios-stepper" style="flex:1;">
+              <button type="button" class="ios-step-btn" onclick="slideProgress('previous')" title="Diapositive précédente" aria-label="Diapositive précédente">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m18 15-6-6-6 6"/></svg>
+              </button>
+              <span class="ios-step-label">Diapo</span>
+              <button type="button" class="ios-step-btn" onclick="slideProgress('next')" title="Diapositive suivante" aria-label="Diapositive suivante">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="section-header" style="margin-top:6px;">
-          <h3 class="section-title">Bibliothèque d'images OpenLP</h3>
-          <button type="button" class="btn btn-xs" onclick="loadImagesLibrary()">Actualiser</button>
-        </div>
-        <div id="images-library-list" class="list-box">
-          <div class="list-row"><span class="row-sub">Chargement des images...</span></div>
-        </div>
-      </section>
+        <!-- SECTIONS COLUMN -->
+        <div class="sections-col">
 
-      <!-- ==================== SECTION 3: BIBLE ==================== -->
-      <section id="sec-bible" class="section-pane hidden">
-        <div class="section-header">
-          <h2 class="section-title">Sélecteur de verset biblique</h2>
-          <span id="bible-version-label" class="row-sub">Bible</span>
+          <!-- ==================== SECTION 1: SERVICES ==================== -->
+          <section id="sec-services" class="section-pane">
+            <div>
+              <div class="section-header">
+                <h2 class="section-title">Ordre du service</h2>
+                <button type="button" class="btn-text" onclick="refreshAll()">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+                  <span>Actualiser</span>
+                </button>
+              </div>
+              <div id="service-items-list" class="list-box">
+                <div class="list-row"><span class="row-sub">Chargement du service…</span></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="section-header">
+                <h3 id="slides-panel-title" class="section-title">Diapositives (En direct)</h3>
+                <div id="slides-mode-seg" class="ios-seg ios-seg-sm">
+                  <span class="ios-seg-thumb" aria-hidden="true"></span>
+                  <button type="button" id="btn-view-preview-slides" class="ios-seg-btn" onclick="setSlidesListMode('preview')">Aperçu</button>
+                  <button type="button" id="btn-view-live-slides" class="ios-seg-btn is-active" onclick="setSlidesListMode('live')">Direct</button>
+                </div>
+              </div>
+              <div id="active-slides-list" class="list-box">
+                <div class="list-row"><span class="row-sub">Aucune diapositive sélectionnée.</span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== SECTION 2: BIBLE ==================== -->
+          <section id="sec-bible" class="section-pane hidden">
+            <div>
+              <div class="section-header">
+                <h2 class="section-title">Sélection du passage</h2>
+                <span id="bible-version-label" class="btn-text">Bible</span>
+              </div>
+              <div class="list-box">
+                <div class="ios-field-row">
+                  <label class="form-label" for="bible-book">Livre</label>
+                  <select id="bible-book" class="form-select" onchange="onBibleBookChange()"></select>
+                </div>
+                <div class="ios-field-row">
+                  <label class="form-label" for="bible-chapter">Chapitre</label>
+                  <select id="bible-chapter" class="form-select" onchange="fetchSelectedBibleVerse()"></select>
+                </div>
+                <div class="ios-field-row">
+                  <label class="form-label" for="bible-verse">Verset(s)</label>
+                  <input id="bible-verse" type="text" value="16" placeholder="Ex. 16 ou 1-5" class="form-input" onchange="fetchSelectedBibleVerse()" onkeyup="if(event.key==='Enter')fetchSelectedBibleVerse()" />
+                </div>
+              </div>
+            </div>
+
+            <div class="search-bar-row">
+              <input id="bible-custom-query" type="text" placeholder="Ou tapez une référence (ex. Jean 3:16-17)…" class="search-input" onkeyup="if(event.key==='Enter')searchBibleManual()" />
+              <button type="button" class="btn btn-tinted" onclick="searchBibleManual()">Chercher</button>
+            </div>
+
+            <div class="ios-card">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span id="bible-preview-ref" class="row-title" style="font-size:15px;font-weight:600;">Jean 3:16</span>
+                <span class="row-sub">Aperçu du texte</span>
+              </div>
+              <p id="bible-preview-text" style="font-size:13.5px;line-height:1.5;color:var(--sys-text-secondary);">
+                Sélectionnez un livre, un chapitre et un verset pour prévisualiser le passage.
+              </p>
+              <div class="action-trio" style="padding-top:4px;">
+                <button type="button" class="btn" onclick="triggerBibleAction('preview')">Aperçu</button>
+                <button type="button" class="btn btn-tinted" onclick="triggerBibleAction('add')">+ Service</button>
+                <button type="button" class="btn btn-primary" onclick="triggerBibleAction('live')">Direct</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== SECTION 3: IMAGES & MOBILE GALLERY UPLOAD ==================== -->
+          <section id="sec-images" class="section-pane hidden">
+            <div class="ios-card">
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <h2 class="section-title" style="padding:0;">Importer depuis la galerie du téléphone</h2>
+                <p class="row-sub" style="white-space:normal;">
+                  Choisissez une image ou affiche dans votre téléphone pour la prévisualiser ou l'envoyer directement sur le projecteur.
+                </p>
+              </div>
+              <label style="display:block;cursor:pointer;">
+                <input type="file" id="gallery-file-input" accept="image/*" class="hidden" onchange="handleGalleryFileSelect(event)" />
+                <div class="btn btn-tinted" style="width:100%;height:40px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                  <span>Choisir une image dans ma galerie</span>
+                </div>
+              </label>
+            </div>
+
+            <!-- Staged Upload Card -->
+            <div id="uploaded-image-card" class="ios-card hidden">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span id="uploaded-image-name" class="row-title">image.jpg</span>
+                <span id="upload-status-label" class="row-sub">Prête</span>
+              </div>
+              <div class="monitor-screen">
+                <img id="uploaded-image-preview" src="" alt="Aperçu galerie" />
+              </div>
+              <div class="action-trio">
+                <button type="button" class="btn btn-sm" onclick="uploadGalleryImage('preview')">Aperçu</button>
+                <button type="button" class="btn btn-tinted btn-sm" onclick="uploadGalleryImage('service')">+ Service</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="uploadGalleryImage('live')">Direct</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="section-header">
+                <h3 class="section-title">Bibliothèque d'images OpenLP</h3>
+                <button type="button" class="btn-text" onclick="loadImagesLibrary()">Actualiser</button>
+              </div>
+              <div id="images-library-list" class="list-box">
+                <div class="list-row"><span class="row-sub">Chargement des images…</span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== SECTION 4: DIAPOS PERSO ==================== -->
+          <section id="sec-custom" class="section-pane hidden">
+            <div>
+              <div class="section-header">
+                <h2 class="section-title">Éditeur de diapositive</h2>
+                <button type="button" class="btn-text" onclick="resetCustomForm()">+ Nouvelle</button>
+              </div>
+
+              <input type="hidden" id="custom-slide-id" value="" />
+
+              <div class="list-box">
+                <div class="ios-field-row">
+                  <label class="form-label" for="custom-slide-title">Titre</label>
+                  <input id="custom-slide-title" type="text" placeholder="Ex. Thème de la Parole" class="form-input" />
+                </div>
+                <div class="ios-field-row">
+                  <label class="form-label" for="custom-slide-credits">Référence</label>
+                  <input id="custom-slide-credits" type="text" placeholder="Ex. 2 Corinthiens 5:7" class="form-input" />
+                </div>
+                <div class="ios-field-row">
+                  <label class="form-label" for="custom-slide-theme">Thème</label>
+                  <select id="custom-slide-theme" class="form-select">
+                    <option value="">Thème par défaut</option>
+                  </select>
+                </div>
+                <textarea id="custom-slide-body" class="form-textarea" placeholder="Saisissez le texte à projeter (séparez plusieurs diapos par --- sur une nouvelle ligne)…"></textarea>
+              </div>
+            </div>
+
+            <div class="action-trio">
+              <button type="button" class="btn" onclick="saveAndTriggerCustom('preview')">Aperçu</button>
+              <button type="button" class="btn btn-tinted" onclick="saveAndTriggerCustom('service')">+ Service</button>
+              <button type="button" class="btn btn-primary" onclick="saveAndTriggerCustom('live')">Direct</button>
+            </div>
+
+            <div>
+              <div class="section-header">
+                <h3 class="section-title">Diapos perso enregistrées</h3>
+              </div>
+              <div id="custom-slides-list" class="list-box">
+                <div class="list-row"><span class="row-sub">Chargement…</span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ==================== SECTION 5: THÈMES VISUELS OPENLP ==================== -->
+          <section id="sec-themes" class="section-pane hidden">
+            <div>
+              <div class="section-header">
+                <h2 class="section-title">Thèmes de salle</h2>
+              </div>
+              <div id="themes-grid-container" class="themes-grid">
+                <div class="row-sub" style="padding:12px;">Chargement des thèmes…</div>
+              </div>
+            </div>
+          </section>
+
         </div>
-
-        <div class="form-grid-3">
-          <div class="form-group">
-            <label class="form-label" for="bible-book">Livre</label>
-            <select id="bible-book" class="form-select" onchange="onBibleBookChange()"></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="bible-chapter">Chapitre</label>
-            <select id="bible-chapter" class="form-select" onchange="fetchSelectedBibleVerse()"></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="bible-verse">Verset(s)</label>
-            <input id="bible-verse" type="text" value="16" placeholder="Ex. 16 ou 1-5" class="form-input" onchange="fetchSelectedBibleVerse()" onkeyup="if(event.key==='Enter')fetchSelectedBibleVerse()" />
-          </div>
-        </div>
-
-        <!-- Direct Reference / Keyword Search -->
-        <div style="display:flex;gap:6px;">
-          <input id="bible-custom-query" type="text" placeholder="Ou tapez une référence (ex. Jean 3:16-17)..." class="form-input" onkeyup="if(event.key==='Enter')searchBibleManual()" />
-          <button type="button" class="btn" onclick="searchBibleManual()">Chercher</button>
-        </div>
-
-        <!-- Verse Reader Preview Box -->
-        <div class="list-box" style="padding:12px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-            <span id="bible-preview-ref" class="row-title">Jean 3:16</span>
-            <span class="row-sub">Aperçu du texte</span>
-          </div>
-          <p id="bible-preview-text" style="font-size:13px;line-height:1.5;color:var(--text);">
-            Sélectionnez un livre, un chapitre et un verset pour prévisualiser le passage.
-          </p>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-          <button type="button" class="btn" onclick="triggerBibleAction('preview')">Aperçu</button>
-          <button type="button" class="btn" onclick="triggerBibleAction('add')">+ Service</button>
-          <button type="button" class="btn btn-primary" onclick="triggerBibleAction('live')">Direct</button>
-        </div>
-      </section>
-
-      <!-- ==================== SECTION 4: THÈMES VISUELS OPENLP ==================== -->
-      <section id="sec-themes" class="section-pane hidden">
-        <div>
-          <h2 class="section-title">Thèmes visuels OpenLP</h2>
-          <p class="row-sub" style="white-space:normal;margin-top:4px;">
-            Choisissez la mise en forme graphique utilisée par OpenLP (ex. habillage pour les versets bibliques, habillage pour le thème du message ou les annonces).
-          </p>
-        </div>
-
-        <div id="themes-grid-container" class="themes-grid">
-          <div class="row-sub">Chargement des thèmes...</div>
-        </div>
-      </section>
-
-      <!-- ==================== SECTION 5: DIAPOS PERSO ==================== -->
-      <section id="sec-custom" class="section-pane hidden">
-        <div>
-          <h2 class="section-title">Créer ou modifier une diapo perso</h2>
-          <p class="row-sub" style="white-space:normal;margin-top:4px;">
-            Rédigez le thème de la Parole du jour ou un communiqué. Séparez plusieurs diapositives par <code>---</code> sur une nouvelle ligne.
-          </p>
-        </div>
-
-        <input type="hidden" id="custom-slide-id" value="" />
-
-        <div class="form-group">
-          <label class="form-label" for="custom-slide-title">Titre de la diapo</label>
-          <input id="custom-slide-title" type="text" placeholder="Ex. Thème de la Parole" class="form-input" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="custom-slide-body">Texte à projeter</label>
-          <textarea id="custom-slide-body" class="form-textarea" placeholder="Saisissez le texte de la diapositive..."></textarea>
-        </div>
-
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="custom-slide-credits">Sous-titre / Référence (pied de page)</label>
-            <input id="custom-slide-credits" type="text" placeholder="Ex. 2 Corinthiens 5:7" class="form-input" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="custom-slide-theme">Thème visuel associé</label>
-            <select id="custom-slide-theme" class="form-select">
-              <option value="">Thème par défaut</option>
-            </select>
-          </div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-          <button type="button" class="btn" onclick="saveAndTriggerCustom('preview')">Aperçu</button>
-          <button type="button" class="btn" onclick="saveAndTriggerCustom('service')">+ Service</button>
-          <button type="button" class="btn btn-primary" onclick="saveAndTriggerCustom('live')">Direct</button>
-        </div>
-
-        <div class="section-header" style="margin-top:8px;">
-          <h3 class="section-title">Diapos perso enregistrées</h3>
-          <button type="button" class="btn btn-xs" onclick="resetCustomForm()">+ Nouvelle</button>
-        </div>
-        <div id="custom-slides-list" class="list-box">
-          <div class="list-row"><span class="row-sub">Chargement...</span></div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- ==================== DISPLAY MODE SHEET (5TH BUTTON) ==================== -->
-    <div id="display-mode-sheet" class="display-sheet hidden">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <span class="section-title">Mode d'affichage du projecteur</span>
-        <button type="button" class="btn btn-xs" onclick="toggleDisplaySheet(false)">Fermer</button>
-      </div>
-      <div class="display-grid">
-        <button type="button" class="display-opt" id="opt-blank" aria-checked="false" onclick="setDisplayMode('blank')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.66 6H14a2 2 0 0 1 2 2v2.34l1 1L22 8v8"/><path d="M16 16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2l10 10Z"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
-          <span>Noir</span>
-        </button>
-        <button type="button" class="display-opt" id="opt-theme" aria-checked="false" onclick="setDisplayMode('theme')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-          <span>Thème</span>
-        </button>
-        <button type="button" class="display-opt" id="opt-desktop" aria-checked="false" onclick="setDisplayMode('desktop')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
-          <span>Bureau</span>
-        </button>
-        <button type="button" class="display-opt" id="opt-show" aria-checked="true" onclick="setDisplayMode('show')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>
-          <span>Afficher</span>
-        </button>
-      </div>
+      </main>
     </div>
 
-    <!-- ==================== FOOTER: 5 ORIGINAL OPENLP BUTTONS ==================== -->
-    <footer class="app-footer" role="group" aria-label="Commandes de base OpenLP">
-      <button type="button" class="footer-btn" onclick="serviceProgress('previous')" title="Élément précédent">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m17 18-6-6 6-6"/><path d="M7 6v12"/></svg>
-        <span>Élém. préc.</span>
-      </button>
+    <!-- ==================== LAYER 4: LIQUID GLASS POPOVER (SORTIE DU PROJECTEUR) ==================== -->
+    <div id="display-backdrop" class="popover-scrim hidden" onclick="toggleDisplaySheet(false)"></div>
+    <div id="display-mode-sheet" class="display-sheet hidden" role="dialog" aria-modal="true" aria-labelledby="pop-sheet-title">
+      <div class="pop-head">
+        <span id="pop-sheet-title" class="pop-title">Sortie du projecteur</span>
+        <button type="button" class="close-circle" onclick="toggleDisplaySheet(false)" aria-label="Fermer">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
 
-      <button type="button" class="footer-btn" onclick="serviceProgress('next')" title="Élément suivant">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m7 18 6-6-6-6"/><path d="M17 6v12"/></svg>
-        <span>Élém. suiv.</span>
-      </button>
+      <div id="pop-display-seg" class="ios-seg" role="radiogroup" aria-label="Mode d'affichage">
+        <span class="ios-seg-thumb" aria-hidden="true"></span>
+        <button type="button" class="ios-seg-btn" id="opt-blank" aria-checked="false" onclick="setDisplayMode('blank')">Noir</button>
+        <button type="button" class="ios-seg-btn" id="opt-theme" aria-checked="false" onclick="setDisplayMode('theme')">Thème</button>
+        <button type="button" class="ios-seg-btn" id="opt-desktop" aria-checked="false" onclick="setDisplayMode('desktop')">Bureau</button>
+        <button type="button" class="ios-seg-btn is-active" id="opt-show" aria-checked="true" onclick="setDisplayMode('show')">Afficher</button>
+      </div>
 
-      <button type="button" class="footer-btn" onclick="slideProgress('previous')" title="Diapositive précédente">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        <span>Diapo préc.</span>
-      </button>
+      <p id="live-status-text" class="pop-hint">Présentation active sur le projecteur principal.</p>
+    </div>
 
-      <button type="button" class="footer-btn" onclick="slideProgress('next')" title="Diapositive suivante">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-        <span>Diapo suiv.</span>
-      </button>
+    <!-- ==================== LAYER 3: FLOATING CAPSULE LIQUID GLASS DOCK (MOBILE) ==================== -->
+    <footer class="ios-dock-wrap" role="group" aria-label="Commandes de base OpenLP">
+      <div class="ios-dock">
+        <div class="ios-stepper">
+          <button type="button" class="ios-step-btn" onclick="serviceProgress('previous')" title="Élément précédent" aria-label="Élément précédent">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <span class="ios-step-label">Élément</span>
+          <button type="button" class="ios-step-btn" onclick="serviceProgress('next')" title="Élément suivant" aria-label="Élément suivant">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
 
-      <button type="button" class="footer-btn footer-btn-primary" onclick="toggleDisplaySheet()" title="Changer le mode d'affichage">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect width="14" height="12" x="2" y="6" rx="2" ry="2"/></svg>
-        <span id="btn-display-label">Affichage</span>
-      </button>
+        <div class="ios-stepper">
+          <button type="button" class="ios-step-btn" onclick="slideProgress('previous')" title="Diapositive précédente" aria-label="Diapositive précédente">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+          </button>
+          <span class="ios-step-label">Diapo</span>
+          <button type="button" class="ios-step-btn" onclick="slideProgress('next')" title="Diapositive suivante" aria-label="Diapositive suivante">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+        </div>
+
+        <button type="button" id="display-trigger-btn" class="ios-dock-action" aria-expanded="false" onclick="toggleDisplaySheet()" title="Changer le mode d'affichage">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+          <span id="btn-display-label">Écran</span>
+        </button>
+      </div>
     </footer>
 
-    <!-- Toast Notification -->
-    <div id="toast-bar" class="toast-bar hidden"></div>
+    <!-- ==================== LAYER 5: TOAST NOTIFICATION ==================== -->
+    <div id="toast-bar" class="toast-bar hidden" role="status" aria-live="polite"></div>
 
   </div>
 
@@ -1017,7 +1658,7 @@
   <script>
     const API_BASE = '/api/v2';
     let authToken = localStorage.getItem('openlp_auth_token') || '';
-    let currentColorTheme = localStorage.getItem('openlp_remote_theme') || 'dark';
+    let currentColorTheme = localStorage.getItem('openlp_remote_theme') || 'light';
     let slidesListMode = 'live'; // 'live' or 'preview'
     let liveItemData = {};
     let previewItemData = {};
@@ -1051,14 +1692,43 @@
     ];
     let bibleBooks = [...DEFAULT_FRENCH_BOOKS];
 
+    /* ==================== PILL THUMB POSITIONING & ICONS ==================== */
+    function positionSegThumb(segId) {
+      const seg = document.getElementById(segId);
+      if (!seg) return;
+      const thumb = seg.querySelector('.ios-seg-thumb');
+      const active = seg.querySelector('.ios-seg-btn.is-active');
+      if (!thumb || !active || active.offsetWidth === 0) return;
+      thumb.style.width = active.offsetWidth + 'px';
+      thumb.style.transform = 'translateX(' + active.offsetLeft + 'px)';
+    }
+
+    function refreshAllThumbs() {
+      ['ios-nav-seg', 'slides-mode-seg', 'pop-display-seg', 'mac-display-seg'].forEach(positionSegThumb);
+    }
+
+    function getPluginIconSvg(pluginName) {
+      const p = (pluginName || '').toLowerCase();
+      if (p.includes('song') || p.includes('chant')) {
+        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+      }
+      if (p.includes('bible')) {
+        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>';
+      }
+      if (p.includes('image') || p.includes('media')) {
+        return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>';
+      }
+      return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>';
+    }
+
     function applyColorTheme(theme) {
-      currentColorTheme = theme === 'light' ? 'light' : 'dark';
+      currentColorTheme = theme === 'dark' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', currentColorTheme);
       localStorage.setItem('openlp_remote_theme', currentColorTheme);
       const isDark = currentColorTheme === 'dark';
       document.getElementById('icon-sun').classList.toggle('hidden', !isDark);
       document.getElementById('icon-moon').classList.toggle('hidden', isDark);
-      document.getElementById('theme-toggle-label').textContent = isDark ? 'Clair' : 'Noir';
+      document.getElementById('theme-toggle-label').textContent = isDark ? 'Clair' : 'Sombre';
     }
 
     function toggleColorTheme() {
@@ -1097,30 +1767,34 @@
       return resp;
     }
 
-    function toggleDrawer(force) {
-      const drawer = document.getElementById('side-drawer');
-      const backdrop = document.getElementById('drawer-backdrop');
-      const isHidden = drawer.classList.contains('hidden');
-      const open = typeof force === 'boolean' ? force : isHidden;
-      drawer.classList.toggle('hidden', !open);
-      backdrop.classList.toggle('hidden', !open);
+    function toggleDrawer() {
+      // Legacy drawer handler preserved for backwards compatibility
     }
 
     const SECTION_TITLES = {
-      services: 'Services',
-      images: 'Images',
+      services: 'Ordre du service',
+      images: 'Images & Galerie',
       bible: 'Bible',
-      themes: 'Thèmes',
+      themes: 'Thèmes de salle',
       custom: 'Diapos perso'
     };
 
     function switchSection(sec) {
       ['services', 'images', 'bible', 'themes', 'custom'].forEach(s => {
-        document.getElementById('sec-' + s).classList.toggle('hidden', s !== sec);
-        document.getElementById('nav-' + s).setAttribute('aria-current', s === sec ? 'page' : 'false');
+        const active = s === sec;
+        document.getElementById('sec-' + s).classList.toggle('hidden', !active);
+        const mobBtn = document.getElementById('nav-' + s);
+        if (mobBtn) {
+          mobBtn.setAttribute('aria-current', active ? 'page' : 'false');
+          mobBtn.classList.toggle('is-active', active);
+        }
+        const macBtn = document.getElementById('mac-nav-' + s);
+        if (macBtn) {
+          macBtn.setAttribute('aria-current', active ? 'page' : 'false');
+        }
       });
       document.getElementById('header-section-title').textContent = SECTION_TITLES[sec] || 'OpenLP';
-      toggleDrawer(false);
+      requestAnimationFrame(refreshAllThumbs);
       if (sec === 'images') loadImagesLibrary();
       if (sec === 'themes') loadThemes();
       if (sec === 'custom') loadCustomSlides();
@@ -1171,10 +1845,9 @@
         : liveItemData;
       document.getElementById('slides-panel-title').textContent =
         slidesListMode === 'preview' ? 'Diapositives (En aperçu)' : 'Diapositives (En direct)';
-      document.getElementById('btn-view-preview-slides').className =
-        slidesListMode === 'preview' ? 'btn btn-primary btn-xs' : 'btn btn-xs';
-      document.getElementById('btn-view-live-slides').className =
-        slidesListMode === 'live' ? 'btn btn-primary btn-xs' : 'btn btn-xs';
+      document.getElementById('btn-view-preview-slides').classList.toggle('is-active', slidesListMode === 'preview');
+      document.getElementById('btn-view-live-slides').classList.toggle('is-active', slidesListMode === 'live');
+      requestAnimationFrame(() => positionSegThumb('slides-mode-seg'));
 
       if (!source || !source.slides || !source.slides.length) {
         container.innerHTML = '<div class="list-row"><span class="row-sub">Aucune diapositive disponible.</span></div>';
@@ -1187,9 +1860,12 @@
         row.style.cursor = 'pointer';
         const textPreview = stripTags(slide.text || slide.html || slide.title || `Diapo ${idx + 1}`);
         row.innerHTML = `
-          <div class="row-info">
-            <div class="row-title">${idx + 1}. ${textPreview}</div>
-            <div class="row-sub">${slide.tag || ('Diapo ' + (idx + 1))}</div>
+          <div class="row-left">
+            <span class="slide-badge">${idx + 1}</span>
+            <div class="row-info">
+              <div class="row-title">${textPreview}</div>
+              <div class="row-sub">${slide.tag || ('Diapo ' + (idx + 1))}</div>
+            </div>
           </div>
         `;
         row.onclick = () => selectControllerSlide(idx, slidesListMode);
@@ -1291,17 +1967,20 @@
           return;
         }
         container.innerHTML = '';
-        items.forEach((item, index) => {
+        items.forEach((item) => {
           const row = document.createElement('div');
-          row.className = 'list-row' + (item.selected ? ' is-active' : '');
+          row.className = 'list-row with-icon' + (item.selected ? ' is-active' : '');
           row.innerHTML = `
-            <div class="row-info">
-              <div class="row-title">${index + 1}. ${item.title}</div>
-              <div class="row-sub">${item.plugin}${item.selected ? ' • En direct' : ''}</div>
+            <div class="row-left">
+              <span class="row-icon">${getPluginIconSvg(item.plugin)}</span>
+              <div class="row-info">
+                <div class="row-title">${item.title}</div>
+                <div class="row-sub">${item.plugin}${item.selected ? ' · En direct' : ''}</div>
+              </div>
             </div>
             <div class="row-actions">
-              <button type="button" class="btn btn-sm" data-act="preview">Aperçu</button>
-              <button type="button" class="btn btn-primary btn-sm" data-act="live">Direct</button>
+              <button type="button" class="btn-text" data-act="preview">Aperçu</button>
+              <button type="button" class="btn btn-primary btn-xs" data-act="live">Direct</button>
             </div>
           `;
           row.querySelector('[data-act="preview"]').onclick = async () => {
@@ -1354,9 +2033,16 @@
 
     function toggleDisplaySheet(force) {
       const sheet = document.getElementById('display-mode-sheet');
+      const backdrop = document.getElementById('display-backdrop');
+      const trig = document.getElementById('display-trigger-btn');
       const isHidden = sheet.classList.contains('hidden');
       const open = typeof force === 'boolean' ? force : isHidden;
       sheet.classList.toggle('hidden', !open);
+      backdrop.classList.toggle('hidden', !open);
+      trig.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) {
+        requestAnimationFrame(() => positionSegThumb('pop-display-seg'));
+      }
     }
 
     async function setDisplayMode(mode) {
@@ -1371,7 +2057,17 @@
     function updateDisplayModeUI(mode) {
       ['blank', 'theme', 'desktop', 'show'].forEach(m => {
         const el = document.getElementById('opt-' + m);
-        if (el) el.setAttribute('aria-checked', m === mode ? 'true' : 'false');
+        if (el) {
+          el.setAttribute('aria-checked', m === mode ? 'true' : 'false');
+          el.classList.toggle('is-active', m === mode);
+        }
+      });
+      document.querySelectorAll('#mac-display-seg [data-disp]').forEach(btn => {
+        btn.classList.toggle('is-active', btn.getAttribute('data-disp') === mode);
+      });
+      requestAnimationFrame(() => {
+        positionSegThumb('pop-display-seg');
+        positionSegThumb('mac-display-seg');
       });
       const labels = {
         show: 'Présentation',
@@ -1380,7 +2076,7 @@
         desktop: 'Bureau'
       };
       document.getElementById('live-status-text').textContent = labels[mode] || 'Présentation';
-      document.getElementById('btn-display-label').textContent = mode === 'show' ? 'Affichage' : (labels[mode] || 'Affichage');
+      document.getElementById('btn-display-label').textContent = mode === 'show' ? 'Écran' : (labels[mode] || 'Écran');
     }
 
     /* ==================== IMAGES & MOBILE GALLERY UPLOAD ==================== */
@@ -1409,7 +2105,7 @@
     async function uploadGalleryImage(action) {
       if (!stagedGalleryFile) return;
       const statusEl = document.getElementById('upload-status-label');
-      statusEl.textContent = 'Envoi en cours...';
+      statusEl.textContent = 'Envoi en cours…';
       try {
         const resp = await apiFetch('/plugins/images/upload', {
           method: 'POST',
@@ -1460,19 +2156,21 @@
       container.innerHTML = '';
       images.forEach(img => {
         const row = document.createElement('div');
-        row.className = 'list-row';
+        row.className = 'list-row with-icon';
         row.innerHTML = `
-          <div class="row-info" style="display:flex;align-items:center;gap:10px;">
-            ${img.thumbnail ? `<img src="${img.thumbnail}" alt="" style="width:44px;height:28px;object-fit:cover;border-radius:4px;border:1px solid var(--border);" />` : ''}
-            <div style="min-width:0;">
+          <div class="row-left">
+            ${img.thumbnail
+              ? `<img src="${img.thumbnail}" alt="" style="width:44px;height:28px;object-fit:cover;border-radius:6px;flex-shrink:0;" />`
+              : `<span class="row-icon">${getPluginIconSvg('images')}</span>`}
+            <div class="row-info">
               <div class="row-title">${img.filename || img.title}</div>
               <div class="row-sub">Image OpenLP</div>
             </div>
           </div>
           <div class="row-actions">
-            <button type="button" class="btn btn-sm" data-act="preview">Aperçu</button>
-            <button type="button" class="btn btn-sm" data-act="add">+ Service</button>
-            <button type="button" class="btn btn-primary btn-sm" data-act="live">Direct</button>
+            <button type="button" class="btn-text" data-act="preview">Aperçu</button>
+            <button type="button" class="btn btn-tinted btn-xs" data-act="add">+ Service</button>
+            <button type="button" class="btn btn-primary btn-xs" data-act="live">Direct</button>
           </div>
         `;
         row.querySelector('[data-act="preview"]').onclick = async () => {
@@ -1564,7 +2262,7 @@
       currentBibleRef = ref;
       document.getElementById('bible-preview-ref').textContent = ref;
       const txtEl = document.getElementById('bible-preview-text');
-      txtEl.textContent = 'Recherche du texte biblique...';
+      txtEl.textContent = 'Recherche du texte biblique…';
       try {
         const resp = await apiFetch('/plugins/bibles/search?text=' + encodeURIComponent(ref));
         if (resp.ok) {
@@ -1639,11 +2337,11 @@
           card.setAttribute('aria-selected', th.selected ? 'true' : 'false');
           card.innerHTML = `
             <div class="theme-thumb">
-              ${th.thumbnail ? `<img src="${th.thumbnail}" alt="${th.name}" />` : `<span class="row-sub">${th.name}</span>`}
+              ${th.thumbnail ? `<img src="${th.thumbnail}" alt="${th.name}" />` : `<span>Aa</span>`}
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;width:100%;">
-              <span class="row-title" style="font-size:12px;">${th.name}</span>
-              <span class="row-sub" style="color:${th.selected ? 'var(--primary)' : 'var(--muted)'};font-weight:${th.selected ? '600' : '400'};">
+              <span class="row-title" style="font-size:13px;">${th.name}</span>
+              <span class="row-sub" style="color:${th.selected ? 'var(--sys-blue)' : 'var(--sys-text-secondary)'};font-weight:${th.selected ? '600' : '400'};">
                 ${th.selected ? 'Actif' : 'Choisir'}
               </span>
             </div>
@@ -1694,16 +2392,19 @@
       container.innerHTML = '';
       slides.forEach(item => {
         const row = document.createElement('div');
-        row.className = 'list-row';
+        row.className = 'list-row with-icon';
         row.innerHTML = `
-          <div class="row-info" style="cursor:pointer;">
-            <div class="row-title">${item.title}</div>
-            <div class="row-sub">${item.theme_name ? ('Thème : ' + item.theme_name) : 'Diapo personnalisée'}</div>
+          <div class="row-left" style="cursor:pointer;">
+            <span class="row-icon">${getPluginIconSvg('custom')}</span>
+            <div class="row-info">
+              <div class="row-title">${item.title}</div>
+              <div class="row-sub">${item.theme_name ? ('Thème : ' + item.theme_name) : 'Diapo personnalisée'}</div>
+            </div>
           </div>
           <div class="row-actions">
-            <button type="button" class="btn btn-sm" data-act="edit">Éditer</button>
-            <button type="button" class="btn btn-sm" data-act="preview">Aperçu</button>
-            <button type="button" class="btn btn-primary btn-sm" data-act="live">Direct</button>
+            <button type="button" class="btn-text" data-act="edit">Éditer</button>
+            <button type="button" class="btn-text" data-act="preview">Aperçu</button>
+            <button type="button" class="btn btn-primary btn-xs" data-act="live">Direct</button>
           </div>
         `;
         const loadIntoEditor = () => {
@@ -1713,7 +2414,7 @@
           document.getElementById('custom-slide-credits').value = item.credits || '';
           document.getElementById('custom-slide-theme').value = item.theme_name || '';
         };
-        row.querySelector('.row-info').onclick = loadIntoEditor;
+        row.querySelector('.row-left').onclick = loadIntoEditor;
         row.querySelector('[data-act="edit"]').onclick = loadIntoEditor;
         row.querySelector('[data-act="preview"]').onclick = async () => {
           stagedPreviewFallback = {
@@ -1794,7 +2495,7 @@
         const ws = new WebSocket(`${wsProto}//${location.hostname}:${wsPort}/state`);
         ws.onopen = () => {
           document.getElementById('conn-dot').className = 'dot dot-ok';
-          document.getElementById('conn-label').textContent = 'Synchronisé en temps réel';
+          document.getElementById('conn-label').textContent = 'En ligne';
         };
         ws.onmessage = async (ev) => {
           try {
@@ -1813,9 +2514,18 @@
       } catch (e) {}
     }
 
+    window.addEventListener('resize', refreshAllThumbs);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        toggleDisplaySheet(false);
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', async () => {
       applyColorTheme(currentColorTheme);
       populateBibleDropdowns();
+      requestAnimationFrame(refreshAllThumbs);
       await Promise.all([
         refreshAll(),
         loadThemes()
