@@ -34,93 +34,249 @@ YOUTH_ALLOWED_PLUGINS = ('bibles', 'images', 'custom', 'songs')
 
 MODERN_DARK_QSS = """
 QMainWindow, QDialog {
-    background-color: #0f1115;
-    color: #f3f4f6;
+    background-color: #000000;
+    color: #F5F5F7;
+    font-family: "Segoe UI", -apple-system, sans-serif;
+}
+QMenuBar {
+    background-color: #1C1C1E;
+    color: #F5F5F7;
+    border-bottom: 1px solid #38383A;
+    padding: 2px 6px;
+}
+QMenuBar::item:selected, QMenu::item:selected {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+    border-radius: 6px;
 }
 QDockWidget {
-    color: #f3f4f6;
+    color: #98989D;
     font-weight: 600;
 }
 QDockWidget::title {
-    background-color: #161920;
-    border: 1px solid #2a2f3a;
-    border-radius: 4px;
-    padding: 6px 10px;
+    background-color: #1C1C1E;
+    border: 1px solid #38383A;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 7px 12px;
+    color: #F5F5F7;
 }
 QToolBar#simplified_quick_bar {
-    background-color: #161920;
-    border-bottom: 1px solid #2a2f3a;
-    padding: 6px 10px;
-    spacing: 6px;
+    background-color: #1C1C1E;
+    border-bottom: 1px solid #38383A;
+    padding: 8px 14px;
+    spacing: 8px;
 }
-QListWidget, QTreeWidget, QTableWidget, QLineEdit, QTextEdit, QPlainTextEdit, QComboBox {
-    background-color: #161920;
-    color: #f3f4f6;
-    border: 1px solid #2a2f3a;
+QToolBar#simplified_quick_bar QPushButton {
+    background-color: #2C2C2E;
+    color: #F5F5F7;
+    border: none;
+    border-radius: 15px;
+    padding: 6px 16px;
+    font-weight: 600;
+}
+QToolBar#simplified_quick_bar QPushButton:hover {
+    background-color: #3A3A3C;
+}
+QToolBar#simplified_quick_bar QPushButton:checked {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+}
+QToolBox::tab {
+    background-color: #1C1C1E;
+    color: #F5F5F7;
+    border: 1px solid #38383A;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+}
+QToolBox::tab:selected {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+    border-color: #0A84FF;
+}
+QListWidget, QTreeWidget, QTableWidget {
+    background-color: #1C1C1E;
+    color: #F5F5F7;
+    border: 1px solid #38383A;
+    border-radius: 10px;
+    padding: 4px;
+    selection-background-color: #0A84FF;
+    selection-color: #FFFFFF;
+    outline: none;
+}
+QListWidget::item, QTreeWidget::item {
+    padding: 6px 8px;
     border-radius: 6px;
-    selection-background-color: #2563eb;
-    selection-color: #ffffff;
+}
+QListWidget::item:selected, QTreeWidget::item:selected {
+    background-color: #0A84FF;
+    color: #FFFFFF;
+}
+QLineEdit, QTextEdit, QPlainTextEdit, QComboBox {
+    background-color: #1C1C1E;
+    color: #F5F5F7;
+    border: 1px solid #38383A;
+    border-radius: 8px;
+    padding: 5px 10px;
+    selection-background-color: #0A84FF;
+    selection-color: #FFFFFF;
+}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus, QComboBox:focus {
+    border: 1.5px solid #0A84FF;
 }
 QPushButton, QToolButton {
-    background-color: #1e222b;
-    color: #f3f4f6;
-    border: 1px solid #2a2f3a;
-    border-radius: 6px;
-    padding: 4px 10px;
+    background-color: #2C2C2E;
+    color: #F5F5F7;
+    border: 1px solid #38383A;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-weight: 500;
 }
 QPushButton:hover, QToolButton:hover {
-    background-color: #2a2f3a;
+    background-color: #3A3A3C;
 }
 QPushButton:checked, QToolButton:checked {
-    background-color: #2563eb;
-    border-color: #2563eb;
-    color: #ffffff;
+    background-color: #0A84FF;
+    border-color: #0A84FF;
+    color: #FFFFFF;
+}
+QScrollBar:vertical {
+    background: transparent;
+    width: 8px;
+    margin: 2px;
+}
+QScrollBar::handle:vertical {
+    background: #48484A;
+    min-height: 24px;
+    border-radius: 4px;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
 }
 """
 
 MODERN_LIGHT_QSS = """
 QMainWindow, QDialog {
-    background-color: #f1f5f9;
-    color: #0f172a;
+    background-color: #F2F2F7;
+    color: #1D1D1F;
+    font-family: "Segoe UI", -apple-system, sans-serif;
+}
+QMenuBar {
+    background-color: #F9F9FB;
+    color: #1D1D1F;
+    border-bottom: 1px solid #E5E5EA;
+    padding: 2px 6px;
+}
+QMenuBar::item:selected, QMenu::item:selected {
+    background-color: #007AFF;
+    color: #FFFFFF;
+    border-radius: 6px;
 }
 QDockWidget {
-    color: #0f172a;
+    color: #6E6E73;
     font-weight: 600;
 }
 QDockWidget::title {
-    background-color: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    padding: 6px 10px;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5EA;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 7px 12px;
+    color: #1D1D1F;
 }
 QToolBar#simplified_quick_bar {
-    background-color: #ffffff;
-    border-bottom: 1px solid #cbd5e1;
-    padding: 6px 10px;
-    spacing: 6px;
+    background-color: #F9F9FB;
+    border-bottom: 1px solid #E5E5EA;
+    padding: 8px 14px;
+    spacing: 8px;
 }
-QListWidget, QTreeWidget, QTableWidget, QLineEdit, QTextEdit, QPlainTextEdit, QComboBox {
-    background-color: #ffffff;
-    color: #0f172a;
-    border: 1px solid #cbd5e1;
+QToolBar#simplified_quick_bar QPushButton {
+    background-color: #E5E5EA;
+    color: #1D1D1F;
+    border: none;
+    border-radius: 15px;
+    padding: 6px 16px;
+    font-weight: 600;
+}
+QToolBar#simplified_quick_bar QPushButton:hover {
+    background-color: #D1D1D6;
+}
+QToolBar#simplified_quick_bar QPushButton:checked {
+    background-color: #007AFF;
+    color: #FFFFFF;
+}
+QToolBox::tab {
+    background-color: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #E5E5EA;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-weight: 600;
+}
+QToolBox::tab:selected {
+    background-color: #007AFF;
+    color: #FFFFFF;
+    border-color: #007AFF;
+}
+QListWidget, QTreeWidget, QTableWidget {
+    background-color: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #E5E5EA;
+    border-radius: 10px;
+    padding: 4px;
+    selection-background-color: #007AFF;
+    selection-color: #FFFFFF;
+    outline: none;
+}
+QListWidget::item, QTreeWidget::item {
+    padding: 6px 8px;
     border-radius: 6px;
-    selection-background-color: #1d4ed8;
-    selection-color: #ffffff;
+}
+QListWidget::item:selected, QTreeWidget::item:selected {
+    background-color: #007AFF;
+    color: #FFFFFF;
+}
+QLineEdit, QTextEdit, QPlainTextEdit, QComboBox {
+    background-color: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #D1D1D6;
+    border-radius: 8px;
+    padding: 5px 10px;
+    selection-background-color: #007AFF;
+    selection-color: #FFFFFF;
+}
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus, QComboBox:focus {
+    border: 1.5px solid #007AFF;
 }
 QPushButton, QToolButton {
-    background-color: #ffffff;
-    color: #0f172a;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 4px 10px;
+    background-color: #FFFFFF;
+    color: #1D1D1F;
+    border: 1px solid #D1D1D6;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-weight: 500;
 }
 QPushButton:hover, QToolButton:hover {
-    background-color: #e2e8f0;
+    background-color: #F2F2F7;
 }
 QPushButton:checked, QToolButton:checked {
-    background-color: #1d4ed8;
-    border-color: #1d4ed8;
-    color: #ffffff;
+    background-color: #007AFF;
+    border-color: #007AFF;
+    color: #FFFFFF;
+}
+QScrollBar:vertical {
+    background: transparent;
+    width: 8px;
+    margin: 2px;
+}
+QScrollBar::handle:vertical {
+    background: #C7C7CC;
+    min-height: 24px;
+    border-radius: 4px;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
 }
 """
 
@@ -184,6 +340,9 @@ class SimplifiedModeController(QtCore.QObject):
         self.toolbar.addWidget(self.theme_btn)
 
         self.main_window.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
+        self.main_window.setStyleSheet(MODERN_LIGHT_QSS)
+        if hasattr(self.main_window, 'media_manager_dock') and self.main_window.media_manager_dock:
+            self.main_window.media_manager_dock.setStyleSheet('')
 
     def focus_plugin_tab(self, plugin_name: str):
         if not self.main_window.media_manager_dock.isVisible():
@@ -222,11 +381,13 @@ class SimplifiedModeController(QtCore.QObject):
             from openlp.core.ui.style import set_default_darkmode
             set_default_darkmode(app)
             app.setStyleSheet(MODERN_DARK_QSS)
+            self.main_window.setStyleSheet(MODERN_DARK_QSS)
             self.theme_btn.setText('Thème : Noir')
         else:
             from openlp.core.ui.style import set_default_lightmode
             set_default_lightmode(app)
             app.setStyleSheet(MODERN_LIGHT_QSS)
+            self.main_window.setStyleSheet(MODERN_LIGHT_QSS)
             self.theme_btn.setText('Thème : Blanc')
 
 

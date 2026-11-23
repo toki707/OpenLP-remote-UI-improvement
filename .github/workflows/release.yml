@@ -37,19 +37,20 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "OpenLP Mobile Remote & PC Simplified UI (${{ github.ref_name }})"
+          name: "OpenLP Remote Apple HIG & Liquid Glass UI (${{ github.ref_name }})"
           body: |
-            ## Nouveautés de cette version (Licence GNU GPL v3)
+            ## Nouveautés de cette version — Édition Apple HIG (iOS 18 & macOS Sequoia) & Liquid Glass (Licence GNU GPL v3)
             
             ### Installation en 1 clic sur Windows (`.exe`)
             Téléchargez et lancez **`OpenLP-Remote-UI-Setup.exe`** ci-dessous, puis cliquez sur **« Installer et Lancer OpenLP »**.
 
-            ### 1. Télécommande Mobile (Web Remote) repensée
-            - **Double moniteur permanent** : **Prévisualisation** (avant envoi) + **En direct** (projecteur) avec bouton *Go Live*.
-            - **Import direct depuis la galerie du téléphone** : téléchargez une image ou affiche depuis votre smartphone pour la prévisualiser, l'ajouter au service ou la projeter sans passer par le PC.
-            - **Volet latéral rabattable épuré** : *Services*, *Images*, *Bible* (sélecteur Livre/Chapitre/Verset + aperçu du texte), *Thèmes* (habillages visuels OpenLP avec miniatures) et *Diapos perso* (création et modification à distance).
-            - **Barre inférieure fidèle aux 5 commandes d'origine** : *Élém. préc.*, *Élém. suiv.*, *Diapo préc.*, *Diapo suiv.* et *Affichage* (*Noir*, *Thème*, *Bureau*, *Afficher*).
-            - **Thème Noir / Blanc** : bascule instantanée entre mode sombre et mode clair.
+            ### 1. Télécommande Web Remote — Design Apple HIG & Liquid Glass
+            - **Barre de navigation en pilule (`border-radius: 999px`)** sur mobile avec curseur glissant continu pour les 5 sections (*Service*, *Bible*, *Images*, *Diapos*, *Thèmes*).
+            - **Système matériel Liquid Glass (couches 3 à 5)** : barre supérieure mobile, dock flottant en capsule (`‹ Élément ›`, `∧ Diapo ∨`, `Écran`), popover *Sortie du projecteur* et notifications toast, avec replis solides (`@supports` et `prefers-reduced-transparency`).
+            - **Architecture Bureau macOS Sequoia (`>= 900 px`)** : barre latérale translucide à gauche + barre d'outils unifiée en haut intégrant le sélecteur de sortie du projecteur (*Noir | Thème | Bureau | Afficher*).
+            - **Double moniteur permanent 16:9** : **Aperçu** + **Direct** (avec badge et anneau rouge) + bouton *Envoyer*.
+            - **Import direct depuis la galerie du téléphone**, sélecteur biblique, éditeur de diapos perso et thèmes de salle.
+            - **Thème Clair (#F2F2F7 / #FFFFFF) par défaut & Mode Sombre OLED (#000000 / #1C1C1E)**.
 
             ### 2. Interface PC (« Mode Simplifié / Jeunes »)
             - **Barre supérieure d'accès rapide** : accès en 1 clic à *Bible*, *Images & Affiches*, *Diapos perso* et *Chants*.

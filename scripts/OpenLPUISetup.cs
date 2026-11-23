@@ -36,43 +36,43 @@ namespace OpenLPUISetup
 
         public SetupForm()
         {
-            this.Text = "OpenLP — Installation Interface Mobile & PC (GPLv3)";
-            this.Size = new Size(480, 270);
+            this.Text = "OpenLP — Installation Apple HIG & Liquid Glass (Mobile & PC)";
+            this.Size = new Size(490, 275);
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = Color.FromArgb(15, 17, 21);
-            this.ForeColor = Color.FromArgb(243, 244, 246);
+            this.BackColor = Color.FromArgb(242, 242, 247);
+            this.ForeColor = Color.FromArgb(29, 29, 31);
             this.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
 
             Label titleLabel = new Label();
-            titleLabel.Text = "OpenLP — Nouvelle Interface Mobile & PC";
+            titleLabel.Text = "OpenLP — Édition Apple HIG (Mobile & PC)";
             titleLabel.Font = new Font("Segoe UI", 13F, FontStyle.Bold);
             titleLabel.Location = new Point(24, 20);
-            titleLabel.Size = new Size(420, 28);
+            titleLabel.Size = new Size(430, 28);
             this.Controls.Add(titleLabel);
 
             Label descLabel = new Label();
             descLabel.Text = "Cet installateur met en place :\n" +
-                             "• La télécommande Mobile avec Prévisualiseur, Galerie & Thème Noir/Blanc\n" +
-                             "• La barre Mode Simplifié (Jeunes) et Thème Noir/Blanc sur PC\n" +
-                             "• Les nouvelles routes API v2 d'OpenLP";
-            descLabel.ForeColor = Color.FromArgb(156, 163, 175);
+                             "• La Web Remote Apple HIG (barre pilule, Liquid Glass, iOS 18 & macOS)\n" +
+                             "• Le thème Apple HIG (#F2F2F7 / #007AFF) et la barre Mode Simplifié sur PC\n" +
+                             "• Les routes API v2 (Prévisualiseur, Galerie mobile, Bibles & Diapos)";
+            descLabel.ForeColor = Color.FromArgb(110, 110, 115);
             descLabel.Location = new Point(24, 54);
-            descLabel.Size = new Size(420, 80);
+            descLabel.Size = new Size(430, 80);
             this.Controls.Add(descLabel);
 
             statusLabel = new Label();
             statusLabel.Text = "Prêt à installer dans votre dossier utilisateur OpenLP.";
-            statusLabel.ForeColor = Color.FromArgb(16, 185, 129);
+            statusLabel.ForeColor = Color.FromArgb(36, 138, 61);
             statusLabel.Location = new Point(24, 140);
-            statusLabel.Size = new Size(420, 24);
+            statusLabel.Size = new Size(430, 24);
             this.Controls.Add(statusLabel);
 
             installBtn = new Button();
             installBtn.Text = "Installer et Lancer OpenLP";
             installBtn.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            installBtn.BackColor = Color.FromArgb(37, 99, 235);
+            installBtn.BackColor = Color.FromArgb(0, 122, 255);
             installBtn.ForeColor = Color.White;
             installBtn.FlatStyle = FlatStyle.Flat;
             installBtn.FlatAppearance.BorderSize = 0;
@@ -84,10 +84,10 @@ namespace OpenLPUISetup
 
             Button closeBtn = new Button();
             closeBtn.Text = "Fermer";
-            closeBtn.BackColor = Color.FromArgb(30, 34, 43);
-            closeBtn.ForeColor = Color.White;
+            closeBtn.BackColor = Color.FromArgb(229, 229, 234);
+            closeBtn.ForeColor = Color.FromArgb(29, 29, 31);
             closeBtn.FlatStyle = FlatStyle.Flat;
-            closeBtn.FlatAppearance.BorderColor = Color.FromArgb(42, 47, 58);
+            closeBtn.FlatAppearance.BorderColor = Color.FromArgb(209, 209, 214);
             closeBtn.Location = new Point(296, 174);
             closeBtn.Size = new Size(140, 40);
             closeBtn.Cursor = Cursors.Hand;
